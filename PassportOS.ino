@@ -33,6 +33,7 @@ SoftwareSerial esp8266(RX, TX);
 #define FONT    0xE71C//gray used for fonts (looks sexier)
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
+int versnum = 0.53;
 int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2, date3, weatherdigit = 69; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
@@ -50,6 +51,8 @@ void statusbar() {
   tft.print(":");
   tft.print(time21);
   tft.print(time22);
+  tft.setCursor(350, 2); //setting cursor for text
+  tft.print(versnum);
 }
 void homelayout() {
   page = 0;
@@ -358,7 +361,9 @@ void setup() {
       time21 = time2 % 10; //0X hand
     }
   }
-  Serial.println("Gi-OS v4 Started");
+  Serial.println("PassportOS Started");
+  Serial.print("Version: ");
+  Serial.println(versnum);
   tft.reset();
   uint16_t identifier = tft.readID();
   tft.begin(identifier);
