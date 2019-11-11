@@ -33,14 +33,14 @@ SoftwareSerial esp8266(RX, TX);
 #define FONT    0xE71C//gray used for fonts (looks sexier)
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
-int versnum = 0.53;
+float versnum = 0.53;
 int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2, date3, weatherdigit = 69; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
 int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
-int characterlist[16][50];
+int characterlist[16][200];
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
   tft.setFont();
@@ -51,7 +51,7 @@ void statusbar() {
   tft.print(":");
   tft.print(time21);
   tft.print(time22);
-  tft.setCursor(350, 2); //setting cursor for text
+  tft.setCursor(285, 2); //setting cursor for text
   tft.print(versnum);
 }
 void homelayout() {
@@ -101,8 +101,8 @@ void cover() {
 }
 void calendarlayout() {
   //tft.fillScreen(WHITE);
-  tft.setTextColor(WHITE);
-  tft.fillRect(0, slidepage + 10, 340, 800, NAVY3); //cool bg
+  tft.setTextColor(NAVY3);
+  tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 15); //set cursor
@@ -277,12 +277,12 @@ void memolayout() {
 void drawpastmemo() {
   i2 = 1;
   i = 4;
-  while (i2 <= 64) {
-    while (i <= 48) {//198
+  while (i2 <= 16) {
+    while (i <= 198) {//198
       i3 = characterlist[i2][i];
       i4 = characterlist[i2][i + 1];
-      i3past = characterlist[i2][i - 2];
-      i4past = characterlist[i2][i - 1];
+      //i3past = characterlist[i2][i - 2];
+      //i4past = characterlist[i2][i - 1];
       if (i3 != 0) {
         if (i2 <= 15) {
           tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, 1, BLACK);
@@ -468,21 +468,28 @@ void loop() {
       FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
       fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
       */
-      int memomindist = 1;//distance between dots
-      if (p.y > characterlist[letter][stroke + 1] && p.y - characterlist[letter][stroke + 1] > memomindist || p.y < characterlist[letter][stroke + 1] && characterlist[letter][stroke + 1] - p.y > memomindist || p.x > characterlist[letter][stroke] && p.x - characterlist[letter][stroke] > memomindist || p.x < characterlist[letter][stroke] && characterlist[letter][stroke] - p.x > memomindist) {
+      int memomindist = 50;//distance between dots
+      if (p.y > characterlist[letter][stroke -1] && p.y - characterlist[letter][stroke -1] > memomindist || p.y < characterlist[letter][stroke -1] && characterlist[letter][stroke -1] - p.y > memomindist || px > characterlist[letter][stroke-1] && px - characterlist[letter][stroke-1] > memomindist || px < characterlist[letter][stroke-1] && characterlist[letter][stroke-1] - px > memomindist) {
         i5 = 0;
+        Serial.println(p.y - characterlist[letter][stroke - 1]);
+        Serial.println(characterlist[letter][stroke - 1] - p.y);
+        Serial.println(px - characterlist[letter][stroke + 1]);
+        Serial.println(characterlist[letter][stroke + 1] - px);
         if (p.x < 107 && p.x > 16) { //check which box it is in
-          characterlist[letter][stroke] =  p.x - 16;
+          px = p.x - 16;
+          characterlist[letter][stroke] =  px;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
         } else if (p.x < 215 && p.x > 115) { //check which box it is in
-          characterlist[letter][stroke] =  p.x - 115;
+          px = p.x - 115;
+          characterlist[letter][stroke] =  px;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
         } else if (p.x < 320 && p.x > 215) { //check which box it is in
-          characterlist[letter][stroke] =  p.x - 215;
+          px = p.x - 215;
+          characterlist[letter][stroke] =  px;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
@@ -513,17 +520,17 @@ void loop() {
       //drawpastmemo();
       if (p.x < 107 && p.x > 16) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 16) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 1;
       } else if (p.x < 215 && p.x > 115) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 115) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 2;
       } else if (p.x < 320 && p.x > 215) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 215) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 3;
       }
