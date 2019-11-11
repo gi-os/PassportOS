@@ -298,7 +298,7 @@ void drawpastmemo() {
     i2++;
     i = 4;
   }
-  FILE *f = fopen("textfile.memo", "wb");//creates writeable file
+  FILE *f = fopen("memo1.psprt", "wb");//creates writeable file
   fwrite(characterlist, sizeof(char), sizeof(characterlist), f);// writes array to file
   fclose(f);//coses file
 }
@@ -456,6 +456,8 @@ void loop() {
 
     } else if (page == 4) { //memo
       //ark[letter] =  0;
+      FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
+      fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
       int memomindist = 1;//distance between dots
       if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >memomindist || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >memomindist|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >memomindist|| p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >memomindist){
         i5 = 0;
@@ -475,7 +477,6 @@ void loop() {
           stroke = stroke + 2;
           Serial.println("WROTE!");
         }
-
       }
 
       /*
