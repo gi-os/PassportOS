@@ -101,39 +101,38 @@ void cover() {
 }
 void calendarlayout() {
   //tft.fillScreen(WHITE);
-  clocklarge();
-  tft.setTextColor(ORANGE);
-  tft.fillRect(0, slidepage + 10, 340, 800, ACCENT); //cool bg
+  tft.setTextColor(WHITE);
+  tft.fillRect(0, slidepage + 10, 340, 800, NAVY3); //cool bg
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 15); //set cursor
   //tft.setFont();
   tft.println(" 0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
-  tft.fillRect(0, slidepage - 1 + (16 * timehour), 340, 2, RED); //marker saying where you are in claendar
+  tft.fillRect(0, slidepage - 1 + (16 * time1), 340, 2, RED); //marker saying where you are in claendar
   char ENG[28] ="Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
   char CALCULUS[23] ="Calculus and Functions";
   char CHEM[18] = "General Chemistry";
-  if (dateweekday == 0) {
+  if (date1 == 0) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
     event2hour(12, "Composition and Rhetoric");
     eventload(14, ENG);
     eventload(15, ENG);
-  } else if (dateweekday == 1) {
+  } else if (date1 == 1) {
     event2hour(10, ENG);
     eventload(12, CHEM);
-  } else if (dateweekday == 2) {
+  } else if (date1 == 2) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
     eventload(13, CHEM);
     eventload(16, "The Drexel Experience");
     eventload(18, EXAM);
-  } else if (dateweekday == 3) {
+  } else if (date1 == 3) {
     eventload(10, CALCULUS);
     eventload(12, CHEM);
     event2hour(14, CHEM);
-  } else if (dateweekday == 4) {
+  } else if (date1 == 4) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
   }
@@ -261,6 +260,7 @@ void memolayout() {
   int curdrawline = 1;
   while (drawlinememo >= curdrawline ) {
     tft.drawFastHLine(0, 10 + curdrawline * 30, 320, RED);
+    curdrawline++;
   }
   drawpastmemo();
   tft.fillRoundRect(0, 290, 320, 250, 30, NAVY3); //cool bg
@@ -307,9 +307,11 @@ void drawpastmemo() {
     i2++;
     i = 4;
   }
+  /*
   FILE *f = fopen("memo1.psprt", "wb");//creates writeable file
   fwrite(characterlist, sizeof(char), sizeof(characterlist), f);// writes array to file
   fclose(f);//coses file
+  */
 }
 long readVcc() {
   // Read 1.1V reference against AVcc
@@ -462,8 +464,10 @@ void loop() {
 
     } else if (page == 4) { //memo
       //ark[letter] =  0;
+      /*
       FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
       fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
+      */
       int memomindist = 1;//distance between dots
       if (p.y > characterlist[letter][stroke + 1] && p.y - characterlist[letter][stroke + 1] > memomindist || p.y < characterlist[letter][stroke + 1] && characterlist[letter][stroke + 1] - p.y > memomindist || p.x > characterlist[letter][stroke] && p.x - characterlist[letter][stroke] > memomindist || p.x < characterlist[letter][stroke] && characterlist[letter][stroke] - p.x > memomindist) {
         i5 = 0;
