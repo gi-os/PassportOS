@@ -100,12 +100,13 @@ void calendarlayout() {
   //tft.fillScreen(WHITE);
   clocklarge();
   tft.setTextColor(ORANGE);
-  tft.fillRect(0, slidepage + 0, 260, 400, ACCENT); //cool bg
-  tft.setTextColor(BLACK); tft.setTextSize(1);
-  tft.setCursor(0, slidepage + 5); //set cursor
+  tft.fillRect(0, slidepage + 10, 340, 800, ACCENT); //cool bg
+  tft.setTextColor(BLACK);
+  tft.setTextSize(1);
+  tft.setCursor(0, slidepage + 15); //set cursor
   //tft.setFont();
   tft.println(" 0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
-  tft.fillRect(0, slidepage - 1 + (16 * timehour), 260, 2, RED); //marker saying where you are in claendar
+  tft.fillRect(0, slidepage - 1 + (16 * timehour), 340, 2, RED); //marker saying where you are in claendar
   char ENG[28] ="Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
   char CALCULUS[23] ="Calculus and Functions";
@@ -173,7 +174,7 @@ void scrollcalendar() {
   char CALCULUS[23] = "Calculus and Functions";
   char CHEM[18] = "General Chemistry";
   GFXcanvas1 *_scroll;
-  /*
+
     _scroll = new GFXcanvas1(320, 480-px/2);
     _scroll->setTextColor(BLACK);
     _scroll->fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
