@@ -38,7 +38,7 @@ int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
-int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7,i4past, i3past;
+int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
 int characterlist[16][50];
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
@@ -76,7 +76,6 @@ void homelayout() {
   tft.setTextColor(FONT);
   tft.setTextSize(1);
   tft.println("Welcome Back Giovanni!");
-
 }
 void cover() {
   while (scrollcur < 480) {
@@ -98,42 +97,44 @@ void cover() {
   homelayout();
 }
 void calendarlayout() {
-  tft.setTextColor(NAVY3);
-  tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
-  tft.setTextColor(BLACK);
-  tft.setTextSize(1);
-  tft.setCursor(0, slidepage + 15); //set cursor
+  //tft.fillScreen(WHITE);
+  clocklarge();
+  tft.setTextColor(ORANGE);
+  tft.fillRect(0, slidepage + 0, 260, 400, ACCENT); //cool bg
+  tft.setTextColor(BLACK); tft.setTextSize(1);
+  tft.setCursor(0, slidepage + 5); //set cursor
   //tft.setFont();
-  tft.println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
-  tft.fillRect(0, slidepage - 1 + (32 * time1), 260, 2, RED); //marker saying where you are in claendar
-  char ENG[28] = "Intro to Engineering Design";
+  tft.println(" 0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
+  tft.fillRect(0, slidepage - 1 + (16 * timehour), 260, 2, RED); //marker saying where you are in claendar
+  char ENG[28] ="Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
-  char CALCULUS[23] = "Calculus and Functions";
+  char CALCULUS[23] ="Calculus and Functions";
   char CHEM[18] = "General Chemistry";
-  if        (date1 == 0) {
+  if (dateweekday == 0) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
     event2hour(12, "Composition and Rhetoric");
     eventload(14, ENG);
     eventload(15, ENG);
-  } else if (date1 == 1) {
+  } else if (dateweekday == 1) {
     event2hour(10, ENG);
     eventload(12, CHEM);
-  } else if (date1 == 2) {
+  } else if (dateweekday == 2) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
     eventload(13, CHEM);
     eventload(16, "The Drexel Experience");
     eventload(18, EXAM);
-  } else if (date1 == 3) {
+  } else if (dateweekday == 3) {
     eventload(10, CALCULUS);
     eventload(12, CHEM);
     event2hour(14, CHEM);
-  } else if (date1 == 4) {
+  } else if (dateweekday == 4) {
     eventload(8, EXAM);
     eventload(10, CALCULUS);
   }
 }
+/*
 void calendarscrollgetto() {
   while (480 - px / 2 != pxpre) {
     if (pxpre >= 480) {
@@ -150,6 +151,8 @@ void calendarscrollgetto() {
     }
   }
 }
+*/
+/*
 void scrollcalendar() {
   px = 480 - px / 2;
   while (px != pxpre) {
@@ -164,12 +167,13 @@ void scrollcalendar() {
       tft.fillRect(240, px, 80, 20, NAVY3); //draw sidebar as scroll
     }
   }
+
+  char ENG[28] = "Intro to Engineering Design";
+  char EXAM[19] = "Common Exam Period";
+  char CALCULUS[23] = "Calculus and Functions";
+  char CHEM[18] = "General Chemistry";
+  GFXcanvas1 *_scroll;
   /*
-    char ENG[28] ="Intro to Engineering Design";
-    char EXAM[19] = "Common Exam Period";
-    char CALCULUS[23] ="Calculus and Functions";
-    char CHEM[18] = "General Chemistry";
-    GFXcanvas1 *_scroll;
     _scroll = new GFXcanvas1(320, 480-px/2);
     _scroll->setTextColor(BLACK);
     _scroll->fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
@@ -183,16 +187,16 @@ void scrollcalendar() {
     tft.drawBitmap(0, 0,_scroll->getBuffer(),320, 480-px/2, FONT, NAVY3);
     delete _scroll;
 
-    //clocklarge();
-    tft.setTextColor(NAVY3);
-    tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
-    tft.setTextColor(BLACK);
-    tft.setTextSize(1);
-    tft.setCursor(0, slidepage + 15); //set cursor
-    //tft.setFont();
-    tft.println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
-    tft.fillRect(0, slidepage - 1 + (32 * time1), 260, 2, RED); //marker saying where you are in claendar
-  */
+  //clocklarge();
+  tft.setTextColor(NAVY3);
+  tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
+  tft.setTextColor(BLACK);
+  tft.setTextSize(1);
+  tft.setCursor(0, slidepage + 15); //set cursor
+  //tft.setFont();
+  tft.println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
+  tft.fillRect(0, slidepage - 1 + (32 * time1), 260, 2, RED); //marker saying where you are in claendar
+
   /*
     if (date1 == 0) {
     canvaseventload(8, EXAM,_scroll);
@@ -217,8 +221,9 @@ void scrollcalendar() {
     canvaseventload(8, EXAM,_scroll);
     canvaseventload(10, CALCULUS,_scroll);
     }
-  */
+
 }
+*/
 /*
   void canvasevent2hour(float eventtime, char eventname[28],GFXcanvas1 _scroll) {
   _scroll->fillRect(40, slidepage + 4 + (32 * eventtime), 230, 60, NAVY1); //marker saying where you are in claendar
@@ -250,8 +255,8 @@ void memolayout() {
   tft.fillRoundRect(0, 10, 320, 480, 30, WHITE); //cool bg
   int drawlinememo = 9;
   int curdrawline = 1;
-  while (drawlinememo >= curdrawline ){
-    tft.drawFastHLine(0, 10+curdrawline*30, 320, RED);
+  while (drawlinememo >= curdrawline ) {
+    tft.drawFastHLine(0, 10 + curdrawline * 30, 320, RED);
   }
   drawpastmemo();
   tft.fillRoundRect(0, 290, 320, 250, 30, NAVY3); //cool bg
@@ -272,14 +277,14 @@ void drawpastmemo() {
     while (i <= 48) {//198
       i3 = characterlist[i2][i];
       i4 = characterlist[i2][i + 1];
-      i3past = characterlist[i2][i-2];
+      i3past = characterlist[i2][i - 2];
       i4past = characterlist[i2][i - 1];
-      if (i3 !=0){
-        if (i2 <=15){
-          tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4-70, 1, BLACK);
+      if (i3 != 0) {
+        if (i2 <= 15) {
+          tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, 1, BLACK);
           //tft.drawLine(i3/4 +(i2*17)-10  , i4/4,  i3past/4 +(i2*17)-10  , i4past/4,GREEN);
-        }else if (i2 <=30){
-          tft.fillCircle(i3 / 4 + ((i2-15) * 17) - 10, i4 / 4-(70+(i2*10)), 1, BLACK);
+        } else if (i2 <= 30) {
+          tft.fillCircle(i3 / 4 + ((i2 - 15) * 17) - 10, i4 / 4 - (70 + (i2 * 10)), 1, BLACK);
         }
       }
 
@@ -441,14 +446,9 @@ void loop() {
     } else if (page == 1) { //calendar
       if ((0 < p.x && p.x < 200)) { //check if in x
         if (p.y != 0) {
-          px = p.y;
-          calendarscrollgetto();
-          //tft.vertScroll(10, 480, 480-p.x/2);
-
-          //scrollcalendar();
+          slidepage = p.y;
+          calendarlayout();
         }
-
-        //calendarlayout();
       }
     } else if (page == 2) { //calculator
 
@@ -459,35 +459,34 @@ void loop() {
       FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
       fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
       int memomindist = 1;//distance between dots
-      if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >memomindist || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >memomindist|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >memomindist|| p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >memomindist){
+      if (p.y > characterlist[letter][stroke + 1] && p.y - characterlist[letter][stroke + 1] > memomindist || p.y < characterlist[letter][stroke + 1] && characterlist[letter][stroke + 1] - p.y > memomindist || p.x > characterlist[letter][stroke] && p.x - characterlist[letter][stroke] > memomindist || p.x < characterlist[letter][stroke] && characterlist[letter][stroke] - p.x > memomindist) {
         i5 = 0;
         if (p.x < 107 && p.x > 16) { //check which box it is in
-          characterlist[letter][stroke] =  p.x-16;
+          characterlist[letter][stroke] =  p.x - 16;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
         } else if (p.x < 215 && p.x > 115) { //check which box it is in
-          characterlist[letter][stroke] =  p.x-115;
+          characterlist[letter][stroke] =  p.x - 115;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
         } else if (p.x < 320 && p.x > 215) { //check which box it is in
-          characterlist[letter][stroke] =  p.x-215;
+          characterlist[letter][stroke] =  p.x - 215;
           characterlist[letter][stroke + 1] =  p.y;
           stroke = stroke + 2;
           Serial.println("WROTE!");
         }
       }
-
       /*
-      if (i5 == 2) {
+        if (i5 == 2) {
         i5 = 0;
         characterlist[letter][stroke] =  p.x;
         characterlist[letter][stroke + 1] =  p.y;
         stroke = stroke + 2;
         Serial.println("WROTE!");
-      }
-      i5++;
+        }
+        i5++;
       */
       /*
         Serial.print(" letter-");
@@ -501,7 +500,6 @@ void loop() {
       */
       //Serial.println(ark[letter][stroke]);
       //Serial.println(ark[letter]);
-
       //drawpastmemo();
       if (p.x < 107 && p.x > 16) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
@@ -519,9 +517,6 @@ void loop() {
         pastbox = curbox;
         curbox = 3;
       }
-
-
-
       if (pastbox != curbox) {
         if (pastbox == 0 && curbox == 1 || pastbox == 1 && curbox == 2 || pastbox == 2 && curbox == 3 || pastbox == 3 && curbox == 1) { //next letter
           letter++;
@@ -532,8 +527,6 @@ void loop() {
             tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
             tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
-
-
           }
         } else if (pastbox == 1 && curbox == 3 || pastbox == 2 && curbox == 1 || pastbox == 3 && curbox == 2) { //jump a letter (space!)
           letter = letter + 2;
@@ -547,11 +540,9 @@ void loop() {
           }
         }
       }
-
       //tft.fillCircle(p.x/3, p.y/3,2,BLACK);
       //tft.fillCircle(380-p.y/2.4, p.x/2,4,BLACK);
       //if (p.y<870 && p.y>670){
-
       //}
       memopastx = p.x;
       memopasty = p.y;
