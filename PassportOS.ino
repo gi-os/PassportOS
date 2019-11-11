@@ -472,7 +472,7 @@ void loop() {
 
 
       //ark[letter] =  0;
-      if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >4 || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >4|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >4 || p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >4){
+      if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >1 || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >1|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >1 || p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >1){
         i5 = 0;
 
         if (p.x < 107 && p.x > 16) { //check which box it is in
