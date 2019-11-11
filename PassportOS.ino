@@ -33,7 +33,7 @@ SoftwareSerial esp8266(RX, TX);
 #define FONT    0xE71C//gray used for fonts (looks sexier)
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
-float versnum = 0.53;
+float versnum = 0.54;
 int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2, date3, weatherdigit = 69; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
@@ -468,13 +468,20 @@ void loop() {
       FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
       fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
       */
-      int memomindist = 50;//distance between dots
-      if (p.y > characterlist[letter][stroke -1] && p.y - characterlist[letter][stroke -1] > memomindist || p.y < characterlist[letter][stroke -1] && characterlist[letter][stroke -1] - p.y > memomindist || px > characterlist[letter][stroke-1] && px - characterlist[letter][stroke-1] > memomindist || px < characterlist[letter][stroke-1] && characterlist[letter][stroke-1] - px > memomindist) {
+      if (p.x < 107 && p.x > 16) { //check which box it is in
+        px = p.x - 16;
+      } else if (p.x < 215 && p.x > 115) { //check which box it is in
+        px = p.x - 115;
+      } else if (p.x < 320 && p.x > 215) { //check which box it is in
+        px = p.x - 215;
+      }
+      int memomindist = 4;//distance between dots
+      if (p.y > characterlist[letter][stroke -1] && p.y - characterlist[letter][stroke -1] > memomindist || p.y < characterlist[letter][stroke -1] && characterlist[letter][stroke -1] - p.y > memomindist || px > characterlist[letter][stroke-2] && px - characterlist[letter][stroke-2] > memomindist || px < characterlist[letter][stroke-2] && characterlist[letter][stroke-2] - px > memomindist) {
         i5 = 0;
         Serial.println(p.y - characterlist[letter][stroke - 1]);
         Serial.println(characterlist[letter][stroke - 1] - p.y);
-        Serial.println(px - characterlist[letter][stroke + 1]);
-        Serial.println(characterlist[letter][stroke + 1] - px);
+        Serial.println(px - characterlist[letter][stroke - 2]);
+        Serial.println(characterlist[letter][stroke - 2] - px);
         if (p.x < 107 && p.x > 16) { //check which box it is in
           px = p.x - 16;
           characterlist[letter][stroke] =  px;
