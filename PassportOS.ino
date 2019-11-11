@@ -248,15 +248,11 @@ void eventload(float eventtime, char eventname[28]) {
 void memolayout() {
   tft.fillScreen(BLACK);
   tft.fillRoundRect(0, 10, 320, 480, 30, WHITE); //cool bg
-  tft.drawFastHLine(0, 40, 320, RED);
-  tft.drawFastHLine(0, 70, 320, RED);
-  tft.drawFastHLine(0, 100, 320, RED);
-  tft.drawFastHLine(0, 130, 320, RED);
-  tft.drawFastHLine(0, 160, 320, RED);
-  tft.drawFastHLine(0, 190, 320, RED);
-  tft.drawFastHLine(0, 220, 320, RED);
-  tft.drawFastHLine(0, 250, 320, RED);
-  tft.drawFastHLine(0, 280, 320, RED);
+  int drawlinememo = 9;
+  int curdrawline = 1;
+  while (drawlinememo >= curdrawline ){
+    tft.drawFastHLine(0, 10+curdrawline*30, 320, RED);
+  }
   drawpastmemo();
   tft.fillRoundRect(0, 290, 320, 250, 30, NAVY3); //cool bg
   tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
@@ -298,9 +294,13 @@ void drawpastmemo() {
       //Serial.println("-");
       i = i + 2;
     }
+
     i2++;
     i = 4;
   }
+  FILE *f = fopen("textfile.memo", "wb");//creates writeable file
+  fwrite(characterlist, sizeof(char), sizeof(characterlist), f);// writes array to file
+  fclose(f);//coses file
 }
 long readVcc() {
   // Read 1.1V reference against AVcc
@@ -455,26 +455,10 @@ void loop() {
     } else if (page == 3) { //weather
 
     } else if (page == 4) { //memo
-      /*
-        if (p.x != memopastx && p.y != memopasty){
-
-        while(ticksec>ticksecpastsmall&&ticksec<ticksecpastlarge){
-          Serial.print("works!");
-          ticksec++;
-          TSPoint p = ts.getPoint();//get touch point
-          tft.fillCircle(360-p.y/2.4, p.x/2, 6, BLACK);
-        }
-        Serial.print("fuck!!");
-
-        }
-      */
-
-
-
       //ark[letter] =  0;
-      if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >1 || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >1|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >1 || p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >1){
+      int memomindist = 1;//distance between dots
+      if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >memomindist || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >memomindist|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >memomindist|| p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >memomindist){
         i5 = 0;
-
         if (p.x < 107 && p.x > 16) { //check which box it is in
           characterlist[letter][stroke] =  p.x-16;
           characterlist[letter][stroke + 1] =  p.y;
@@ -520,18 +504,17 @@ void loop() {
       //drawpastmemo();
       if (p.x < 107 && p.x > 16) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-50, 1, BLACK);
+        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 1;
       } else if (p.x < 215 && p.x > 115) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-50, 1, BLACK);
+        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 2;
       } else if (p.x < 320 && p.x > 215) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-50, 1, BLACK);
+        //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-70, 1, BLACK);
         pastbox = curbox;
         curbox = 3;
       }
@@ -544,7 +527,6 @@ void loop() {
           stroke = 0;
           if (p.x < 107 && p.x > 16) { //check which box it is in
             tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
-
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
             tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
@@ -556,13 +538,11 @@ void loop() {
           letter = letter + 2;
           stroke = 0;
           if (p.x < 107 && p.x > 16) { //check which box it is in
-
-            tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
+            tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cover past box
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
-            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
-
+            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cover past box
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
-            tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
+            tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cover past box
           }
         }
       }
@@ -572,10 +552,8 @@ void loop() {
       //if (p.y<870 && p.y>670){
 
       //}
-
       memopastx = p.x;
       memopasty = p.y;
-
     }
   }
   if (ticksec == 500) { //convert ticks to seconds
