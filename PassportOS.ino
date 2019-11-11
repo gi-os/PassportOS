@@ -267,7 +267,7 @@ void memolayout() {
   tft.setTextColor(FONT);
   tft.setTextSize(1);
   tft.setCursor(65, 475); //set cursor
-  tft.println("SAVE   LOAD   DELETE");  
+  tft.println("SAVE   LOAD   DELETE");
 }
 void drawpastmemo() {
   i2 = 1;
@@ -280,13 +280,13 @@ void drawpastmemo() {
       i4past = characterlist[i2][i - 1];
       if (i3 !=0){
         if (i2 <=15){
-          //tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4-70, 1, BLACK);
-          tft.drawLine(i3/4 +(i2*17)-10  , i4/4,  i3past/4 +(i2*17)-10  , i4past/4,GREEN);
+          tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4-70, 1, BLACK);
+          //tft.drawLine(i3/4 +(i2*17)-10  , i4/4,  i3past/4 +(i2*17)-10  , i4past/4,GREEN);
         }else if (i2 <=30){
           tft.fillCircle(i3 / 4 + ((i2-15) * 17) - 10, i4 / 4-(70+(i2*10)), 1, BLACK);
         }
       }
-      
+
       Serial.print("i2-");
       Serial.print(i2);
       Serial.print("| i-");
@@ -468,13 +468,13 @@ void loop() {
 
         }
       */
-      
+
 
 
       //ark[letter] =  0;
       if (p.y>characterlist[letter][stroke+1] && p.y-characterlist[letter][stroke+1] >4 || p.y<characterlist[letter][stroke+1] && characterlist[letter][stroke+1]-p.y >4|| p.x>characterlist[letter][stroke] && p.x-characterlist[letter][stroke] >4 || p.x<characterlist[letter][stroke] && characterlist[letter][stroke]-p.x >4){
         i5 = 0;
-        
+
         if (p.x < 107 && p.x > 16) { //check which box it is in
           characterlist[letter][stroke] =  p.x-16;
           characterlist[letter][stroke + 1] =  p.y;
@@ -491,9 +491,9 @@ void loop() {
           stroke = stroke + 2;
           Serial.println("WROTE!");
         }
-        
+
       }
-      
+
       /*
       if (i5 == 2) {
         i5 = 0;
@@ -520,7 +520,7 @@ void loop() {
       //drawpastmemo();
       if (p.x < 107 && p.x > 16) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        
+
         //tft.fillCircle(p.x / 4 + (i6 * 17) - 10, p.y / 4+(i7*10)-50, 1, BLACK);
         pastbox = curbox;
         curbox = 1;
@@ -535,32 +535,32 @@ void loop() {
         pastbox = curbox;
         curbox = 3;
       }
-      
-      
+
+
 
       if (pastbox != curbox) {
         if (pastbox == 0 && curbox == 1 || pastbox == 1 && curbox == 2 || pastbox == 2 && curbox == 3 || pastbox == 3 && curbox == 1) { //next letter
           letter++;
           stroke = 0;
           if (p.x < 107 && p.x > 16) { //check which box it is in
-            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg  
-            
+            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
+
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
             tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
             tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
-            
-            
+
+
           }
         } else if (pastbox == 1 && curbox == 3 || pastbox == 2 && curbox == 1 || pastbox == 3 && curbox == 2) { //jump a letter (space!)
           letter = letter + 2;
           stroke = 0;
           if (p.x < 107 && p.x > 16) { //check which box it is in
-            
+
             tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
             tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
-            
+
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
             tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
           }
