@@ -59,7 +59,7 @@ void homelayout() {
   tft.drawBitmap(256, 205, calculatoricon, 50, 50, FONT); //calculator icon
   tft.drawBitmap(256, 280, weathericon, 50, 50, FONT); //weather icon
   tft.drawBitmap(256, 355, memoicon, 50, 50, FONT); //memo icon
-  tft.drawBitmap(0, 0, wave, 240, 480, NAVY3); // cool wave background
+  //tft.drawBitmap(0, 0, wave, 240, 480, NAVY3); // cool wave background
   tft.fillRect(68, 172, 104, 136, FONT); //clock square 1
   tft.fillRect(72, 176, 96, 128, NAVY2); //clock square 2
   tft.setFont(&FreeSans18pt7b);
