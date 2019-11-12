@@ -40,7 +40,7 @@ int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
 int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
-int characterlist[16][200];
+int characterlist[16][180];
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
   tft.setFont();
@@ -55,6 +55,14 @@ void statusbar() {
   tft.print(versnum);
 }
 void homelayout() {
+  //tft.reset();
+  uint16_t identifier = tft.readID();
+  tft.begin(identifier);
+  //Serial.print("TFT Has been rebooted ");
+  //tft.setRotation(0);
+  tft.invertDisplay(1);
+
+  tft.fillScreen(NAVY1);
   page = 0;
   //images
   tft.drawBitmap(256, 20, glogo, 50, 79, FONT); //g logo image
@@ -62,7 +70,7 @@ void homelayout() {
   tft.drawBitmap(256, 205, calculatoricon, 50, 50, FONT); //calculator icon
   tft.drawBitmap(256, 280, weathericon, 50, 50, FONT); //weather icon
   tft.drawBitmap(256, 355, memoicon, 50, 50, FONT); //memo icon
-  //tft.drawBitmap(0, 0, wave, 240, 480, NAVY3); // cool wave background
+  tft.drawBitmap(0, 0, wave, 240, 480, NAVY3); // cool wave background
   tft.fillRect(68, 172, 104, 136, FONT); //clock square 1
   tft.fillRect(72, 176, 96, 128, NAVY2); //clock square 2
   tft.setFont(&FreeSans18pt7b);
@@ -100,18 +108,18 @@ void cover() {
   homelayout();
 }
 void calendarlayout() {
-  //tft.fillScreen(WHITE);
+  tft.fillScreen(WHITE);
   tft.setTextColor(NAVY3);
   tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 15); //set cursor
-  //tft.setFont();
-  tft.println(" 0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
+  tft.setFont(&FreeSans9pt7b);
+  tft.println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
   tft.fillRect(0, slidepage - 1 + (16 * time1), 340, 2, RED); //marker saying where you are in claendar
-  char ENG[28] ="Intro to Engineering Design";
+  char ENG[28] = "Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
-  char CALCULUS[23] ="Calculus and Functions";
+  char CALCULUS[23] = "Calculus and Functions";
   char CHEM[18] = "General Chemistry";
   if (date1 == 0) {
     eventload(8, EXAM);
@@ -138,7 +146,7 @@ void calendarlayout() {
   }
 }
 /*
-void calendarscrollgetto() {
+  void calendarscrollgetto() {
   while (480 - px / 2 != pxpre) {
     if (pxpre >= 480) {
       pxpre = 0;
@@ -153,10 +161,10 @@ void calendarscrollgetto() {
       delay(1);
     }
   }
-}
+  }
 */
 /*
-void scrollcalendar() {
+  void scrollcalendar() {
   px = 480 - px / 2;
   while (px != pxpre) {
     tft.vertScroll(10, 480, pxpre);
@@ -225,7 +233,7 @@ void scrollcalendar() {
     canvaseventload(10, CALCULUS,_scroll);
     }
 
-}
+  }
 */
 /*
   void canvasevent2hour(float eventtime, char eventname[28],GFXcanvas1 _scroll) {
@@ -281,12 +289,15 @@ void drawpastmemo() {
     while (i <= 198) {//198
       i3 = characterlist[i2][i];
       i4 = characterlist[i2][i + 1];
-      //i3past = characterlist[i2][i - 2];
-      //i4past = characterlist[i2][i - 1];
+      i3past = characterlist[i2][i - 2];
+      i4past = characterlist[i2][i - 1];
       if (i3 != 0) {
         if (i2 <= 15) {
+          tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4, 1, BLACK);
           tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, 1, BLACK);
-          //tft.drawLine(i3/4 +(i2*17)-10  , i4/4,  i3past/4 +(i2*17)-10  , i4past/4,GREEN);
+          //tft.drawLine(  i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, i3past / 4 + (i2 * 17) - 10,i4past / 4 - 70,BLACK);
+          //tft.drawLine(  i3 / 4 + (i2 * 17) - 10+1, i4 / 4 - 70+1, i3past / 4 + (i2 * 17) - 10+1,i4past / 4 - 70+1,BLACK);
+          //tft.drawLine(  i3 / 4 + (i2 * 17) - 10-1, i4 / 4 - 70-1, i3past / 4 + (i2 * 17) - 10-1,i4past / 4 - 70-1,BLACK);
         } else if (i2 <= 30) {
           tft.fillCircle(i3 / 4 + ((i2 - 15) * 17) - 10, i4 / 4 - (70 + (i2 * 10)), 1, BLACK);
         }
@@ -308,9 +319,9 @@ void drawpastmemo() {
     i = 4;
   }
   /*
-  FILE *f = fopen("memo1.psprt", "wb");//creates writeable file
-  fwrite(characterlist, sizeof(char), sizeof(characterlist), f);// writes array to file
-  fclose(f);//coses file
+    FILE *f = fopen("memo1.psprt", "wb");//creates writeable file
+    fwrite(characterlist, sizeof(char), sizeof(characterlist), f);// writes array to file
+    fclose(f);//coses file
   */
 }
 long readVcc() {
@@ -396,33 +407,22 @@ void loop() {
     Serial.print(" y- ");
     Serial.println(p.y);
     if ((0 < p.x && p.x < 275)) { //go home code
-      if ((0 < p.y && p.y < 150) || homepasty2 != 0) { //check if in top of Screen
-        if ((0 < homepasty && homepasty < 150)) { //check if in a few secs you still there
-          tft.fillRect(0, 0, 320, 10, GREEN); //say you good to go
-          if ((150 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
-            homepasty = 0;
-            homepasty2 = 0;
-            Serial.print("going home...");
-            cover();
-          } else if ((0 < homepasty2 && homepasty2 < 150)) { //check if you havent moved
-            homepasty = 0;
-            homepasty2 = 0;
-            statusbar();
-            //tft.fillRect(0, 472, 320, 8, RED); //draw bg as scroll
-            delay(1000);
-          } else {
-            delay(600);
-            TSPoint p = ts.getPoint();//get touch point
-            p.x = p.x + p.y;
-            p.y = p.x - p.y;
-            p.x = p.x - p.y;
-
-            p.x = map(p.x, TS_MINX, TS_MAXX, tft.width(), 0);
-            p.y = tft.height() - (map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
-            homepasty2 = p.y; //set pastx to p.x to compare
-          }
+    if ((0 < p.y && p.y < 150) || homepasty2 != 0) { //check if in top of Screen
+      if ((0 < homepasty && homepasty < 150)) { //check if in a few secs you still there
+        tft.fillRect(0, 0, 320, 10, GREEN); //say you good to go
+        if ((150 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
+          homepasty = 0;
+          homepasty2 = 0;
+          Serial.print("going home...");
+          cover();
+        } else if ((0 < homepasty2 && homepasty2 < 150)) { //check if you havent moved
+          homepasty = 0;
+          homepasty2 = 0;
+          statusbar();
+          //tft.fillRect(0, 472, 320, 8, RED); //draw bg as scroll
+          delay(1000);
         } else {
-          delay(300);
+          delay(600);
           TSPoint p = ts.getPoint();//get touch point
           p.x = p.x + p.y;
           p.y = p.x - p.y;
@@ -430,13 +430,24 @@ void loop() {
 
           p.x = map(p.x, TS_MINX, TS_MAXX, tft.width(), 0);
           p.y = tft.height() - (map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
-          homepasty = p.y; //set pastx to p.x to compare
+          homepasty2 = p.y; //set pastx to p.x to compare
         }
-      } else if ((0 < homepasty && homepasty < 150 && homepasty2 <= 150)) { //if you arent there anymore set pastx to 0
-        homepasty = 0;
-        homepasty2 = 0;
-        statusbar();
+      } else {
+        delay(300);
+        TSPoint p = ts.getPoint();//get touch point
+        p.x = p.x + p.y;
+        p.y = p.x - p.y;
+        p.x = p.x - p.y;
+
+        p.x = map(p.x, TS_MINX, TS_MAXX, tft.width(), 0);
+        p.y = tft.height() - (map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
+        homepasty = p.y; //set pastx to p.x to compare
       }
+    } else if ((0 < homepasty && homepasty < 150 && homepasty2 <= 150)) { //if you arent there anymore set pastx to 0
+      homepasty = 0;
+      homepasty2 = 0;
+      statusbar();
+    }
     }
     if (page == 0) { //home page
       if ((256 < p.x && p.x < 320)) {//check in bar
@@ -452,11 +463,9 @@ void loop() {
         }
       }
     } else if (page == 1) { //calendar
-      if ((0 < p.x && p.x < 200)) { //check if in x
-        if (p.y != 0) {
-          slidepage = p.y;
-          calendarlayout();
-        }
+      if ((280 < p.x && p.x < 320)) { //check if in x
+        slidepage = 480 - p.y * 1.5;
+        calendarlayout();
       }
     } else if (page == 2) { //calculator
 
@@ -465,8 +474,8 @@ void loop() {
     } else if (page == 4) { //memo
       //ark[letter] =  0;
       /*
-      FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
-      fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
+        FILE *ifp = fopen("memo1.psprt", "rb"); //opens file
+        fread(characterlist, sizeof(char), sizeof(characterlist), ifp);//converts file to characterlist array
       */
       if (p.x < 107 && p.x > 16) { //check which box it is in
         px = p.x - 16;
@@ -475,8 +484,8 @@ void loop() {
       } else if (p.x < 320 && p.x > 215) { //check which box it is in
         px = p.x - 215;
       }
-      int memomindist = 4;//distance between dots
-      if (p.y > characterlist[letter][stroke -1] && p.y - characterlist[letter][stroke -1] > memomindist || p.y < characterlist[letter][stroke -1] && characterlist[letter][stroke -1] - p.y > memomindist || px > characterlist[letter][stroke-2] && px - characterlist[letter][stroke-2] > memomindist || px < characterlist[letter][stroke-2] && characterlist[letter][stroke-2] - px > memomindist) {
+      int memomindist = 3;//distance between dots
+      if (p.y > characterlist[letter][stroke - 1] && p.y - characterlist[letter][stroke - 1] > memomindist || p.y < characterlist[letter][stroke - 1] && characterlist[letter][stroke - 1] - p.y > memomindist || px > characterlist[letter][stroke - 2] && px - characterlist[letter][stroke - 2] > memomindist || px < characterlist[letter][stroke - 2] && characterlist[letter][stroke - 2] - px > memomindist) {
         i5 = 0;
         Serial.println(p.y - characterlist[letter][stroke - 1]);
         Serial.println(characterlist[letter][stroke - 1] - p.y);
@@ -527,24 +536,27 @@ void loop() {
       //drawpastmemo();
       if (p.x < 107 && p.x > 16) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 16) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
         pastbox = curbox;
         curbox = 1;
       } else if (p.x < 215 && p.x > 115) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 115) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
         pastbox = curbox;
         curbox = 2;
       } else if (p.x < 320 && p.x > 215) { //check which box it is in
         tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 215) / 4 + (i6 * 17) +(letter*17), p.y / 4+(i7*10)-70, 1, BLACK);
+        tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
         pastbox = curbox;
         curbox = 3;
       }
       if (pastbox != curbox) {
         if (pastbox == 0 && curbox == 1 || pastbox == 1 && curbox == 2 || pastbox == 2 && curbox == 3 || pastbox == 3 && curbox == 1) { //next letter
+          characterlist[letter][stroke - 2] =  characterlist[letter][stroke - 4];
+          characterlist[letter][stroke - 1] =  characterlist[letter][stroke - 3];
           letter++;
           stroke = 0;
+
           if (p.x < 107 && p.x > 16) { //check which box it is in
             tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
