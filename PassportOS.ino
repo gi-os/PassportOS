@@ -63,6 +63,7 @@ void homelayout() {
   tft.invertDisplay(1);
 
   tft.fillScreen(NAVY1);
+  tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
   page = 0;
   //images
   tft.drawBitmap(256, 20, glogo, 50, 79, FONT); //g logo image
@@ -70,7 +71,7 @@ void homelayout() {
   tft.drawBitmap(256, 205, calculatoricon, 50, 50, FONT); //calculator icon
   tft.drawBitmap(256, 280, weathericon, 50, 50, FONT); //weather icon
   tft.drawBitmap(256, 355, memoicon, 50, 50, FONT); //memo icon
-  tft.drawBitmap(0, 0, wave, 240, 480, NAVY3); // cool wave background
+  tft.drawBitmap(0, 0, wave, 240, 480, FONT); // cool wave background
   tft.fillRect(68, 172, 104, 136, FONT); //clock square 1
   tft.fillRect(72, 176, 96, 128, NAVY2); //clock square 2
   tft.setFont(&FreeSans18pt7b);
@@ -464,7 +465,7 @@ void loop() {
       }
     } else if (page == 1) { //calendar
       if ((280 < p.x && p.x < 320)) { //check if in x
-        slidepage = 480 - p.y * 1.5;
+        slidepage = 380 - p.y * 1.5;
         calendarlayout();
       }
     } else if (page == 2) { //calculator
