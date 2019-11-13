@@ -105,7 +105,7 @@ void calendarlayout() {
   tft.fillScreen(NAVY3);
   tft.setTextColor(FONT);
   tft.setTextSize(1);
-  tft.setCursor(90, 30);
+  tft.setCursor(80, 50);
   tft.setFont(&FreeSans18pt7b);
   tft.print(date2);
   tft.print("/");
@@ -228,15 +228,15 @@ void memolayout() {
 void drawpastmemo() {
   i2 = 1;
   i = 4;
-  while (i2 <= 16) {
-    while (i <= 198) {//198
+  while (i2 <= 15) {
+    while (i <= 178) {//198
       i3 = characterlist[i2][i];
       i4 = characterlist[i2][i + 1];
       i3past = characterlist[i2][i - 2];
       i4past = characterlist[i2][i - 1];
       if (i3 != 0) {
         if (i2 <= 15) {
-          tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4, 1, BLACK);
+          //tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4, 1, BLACK);
           tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, 1, BLACK);
         } else if (i2 <= 30) {
           tft.fillCircle(i3 / 4 + ((i2 - 15) * 17) - 10, i4 / 4 - (70 + (i2 * 10)), 1, BLACK);
