@@ -41,6 +41,7 @@ int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
 int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
 int characterlist[16][180];
+unsigned int sundaycolor,mondaycolor,tuesdaycolor,wednesdaycolor,thursdaycolor,fridaycolor,saturdaycolor;
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
   tft.setFont();
@@ -109,13 +110,51 @@ void cover() {
   homelayout();
 }
 void calendarlayout() {
+  slidepage=80;
   tft.fillScreen(WHITE);
+  if (date1 == 0){//monday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (date1 == 1){//tuesday
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=FONT;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (date1 == 2){//wednesday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=FONT;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (date1 == 3){//thursday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=FONT;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (date1 == 4){//friday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=FONT;  saturdaycolor=RED;
+  }else if (date1 == 5){//saturday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=FONT;
+  }else if (date1 == 6){//sunday
+    sundaycolor=FONT;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }
+  tft.fillRect(0,60, 47, 30, sundaycolor); //cool bg
+  tft.fillRect(47,60, 45, 30, mondaycolor); //cool bg
+  tft.fillRect(92,60, 45, 30, tuesdaycolor); //cool bg
+  tft.fillRect(137,60, 45, 30, wednesdaycolor); //cool bg
+  tft.fillRect(182,60, 45, 30, thursdaycolor); //cool bg
+  tft.fillRect(227,60, 45, 30, fridaycolor); //cool bg
+  tft.fillRect(270,60, 50, 30, saturdaycolor); //cool bg
+
+  tft.drawRect(0,60, 47, 35, WHITE); //cool bg
+  tft.drawRect(47,60, 45, 35, WHITE); //cool bg
+  tft.drawRect(92,60, 45, 35, WHITE); //cool bg
+  tft.drawRect(137,60, 45, 35, WHITE); //cool bg
+  tft.drawRect(182,60, 45, 35, WHITE); //cool bg
+  tft.drawRect(227,60, 45, 35, WHITE); //cool bg
+  tft.drawRect(270,60, 50, 35, WHITE); //cool bg
+  tft.setTextColor(WHITE);
+  tft.setTextSize(2);
+  tft.setCursor(6, 68); tft.print("SUN"); tft.setCursor(53, 65); tft.print("MON"); tft.setCursor(97, 65); tft.print("TUE"); tft.setCursor(143, 65); tft.print("WED"); tft.setCursor(187, 65); tft.print("THU"); tft.setCursor(233, 65); tft.print("FRI"); tft.setCursor(278, 65); tft.print("SAT");
+  
+  drawcalendar();
+}
+void drawcalendar(){
   tft.setTextColor(NAVY3);
-  tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
+  tft.fillRect(0, slidepage + 10, 340, 390, FONT); //cool bg
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
-  tft.setCursor(0, slidepage + 15); //set cursor
-  tft.setFont(&FreeSans9pt7b);
+  tft.setCursor(0, slidepage + 17); //set cursor
+  tft.setFont();
   tft.println("  0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
   tft.fillRect(0, slidepage - 1 + (16 * time1), 340, 2, RED); //marker saying where you are in claendar
   char ENG[28] = "Intro to Engineering Design";
@@ -123,27 +162,27 @@ void calendarlayout() {
   char CALCULUS[23] = "Calculus and Functions";
   char CHEM[18] = "General Chemistry";
   if (date1 == 0) {
-    eventload(8, EXAM);
-    eventload(10, CALCULUS);
-    event2hour(12, "Composition and Rhetoric");
-    eventload(14, ENG);
-    eventload(15, ENG);
+    eventload(8, EXAM," 8");
+    eventload(10, CALCULUS,"10");
+    event2hour(12, "Composition and Rhetoric","12","13");
+    eventload(14, ENG,"14");
+    eventload(15, ENG,"15");
   } else if (date1 == 1) {
-    event2hour(10, ENG);
-    eventload(12, CHEM);
+    event2hour(10, ENG,"10","11");
+    eventload(12, CHEM,"12");
   } else if (date1 == 2) {
-    eventload(8, EXAM);
-    eventload(10, CALCULUS);
-    eventload(13, CHEM);
-    eventload(16, "The Drexel Experience");
-    eventload(18, EXAM);
+    eventload(8, EXAM," 8");
+    eventload(10, CALCULUS,"10");
+    eventload(13, CHEM,"13");
+    eventload(16, "The Drexel Experience","10");
+    eventload(18, EXAM,"18");
   } else if (date1 == 3) {
-    eventload(10, CALCULUS);
-    eventload(12, CHEM);
-    event2hour(14, CHEM);
+    eventload(10, CALCULUS,"10");
+    eventload(12, CHEM,"12");
+    event2hour(14, CHEM,"14","15");
   } else if (date1 == 4) {
-    eventload(8, EXAM);
-    eventload(10, CALCULUS);
+    eventload(8, EXAM," 8");
+    eventload(10, CALCULUS,"10");
   }
 }
 /*
@@ -250,16 +289,24 @@ void calendarlayout() {
   _scroll->println(eventname);
   }
 */
-void event2hour(float eventtime, char eventname[28]) {
-  tft.fillRect(40, slidepage + 4 + (32 * eventtime)-80, 230, 100, NAVY1); //marker saying where you are in claendar
-  tft.setTextColor(RED); tft.setTextSize(1);
-  tft.setCursor(45, slidepage + 20 + (32 * eventtime)-80); //setting cursor for text
+void event2hour(float eventtime, char eventname[28],char eventtimeread[2],char eventtimeread2[2]) {
+  tft.fillRect(40, slidepage + 4 + (16 * eventtime)+10, 230, 30, NAVY1); //marker saying where you are in claendar
+  tft.fillRect(0, slidepage + 4 + (16 * eventtime)+10, 40, 30, NAVY3); //marker saying where you are in claendar
+  tft.setTextColor(FONT); tft.setTextSize(1);
+  tft.setCursor(0, slidepage + 6 + (16 * eventtime)+11); //setting cursor for text
+  tft.print(" ");tft.print(eventtimeread);tft.print(":00");
+  tft.setCursor(0, slidepage + 6 + (16 * (eventtime+1))+11);
+  tft.print(" ");tft.print(eventtimeread2);tft.print(":00");
+  tft.setCursor(45, slidepage + 16 + (16 * eventtime)+10); //setting cursor for text
   tft.println(eventname);
 }
-void eventload(float eventtime, char eventname[28]) {
-  tft.fillRect(40, slidepage + 4 + (32 * eventtime)-80, 230, 60, NAVY1); //marker saying where you are in claendar
-  tft.setTextColor(RED); tft.setTextSize(1);
-  tft.setCursor(45, slidepage + 20 + (32 * eventtime)-80); //setting cursor for text
+void eventload(float eventtime, char eventname[28],char eventtimeread[2]) {
+  tft.fillRect(40, slidepage + 4 + (16 * eventtime)+10, 230, 14, NAVY1); //marker saying where you are in claendar
+  tft.fillRect(0, slidepage + 4 + (16 * eventtime)+10, 40, 14, NAVY3); //marker saying where you are in claendar
+  tft.setTextColor(FONT); tft.setTextSize(1);
+  tft.setCursor(0, slidepage + 6 + (16 * eventtime)+11); //setting cursor for text
+  tft.print(" ");tft.print(eventtimeread);tft.print(":00");
+  tft.setCursor(45, slidepage + 6 + (16 * eventtime)+11); //setting cursor for text
   tft.println(eventname);
 }
 void memolayout() {
@@ -384,8 +431,8 @@ void setup() {
   Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
   tft.setRotation(0);
   tft.invertDisplay(1);
-  tft.fillScreen(NAVY1);
-  tft.fillRect(240, 0, 80, 500, NAVY3); //sidebar
+  //tft.fillScreen(NAVY1);
+  //tft.fillRect(240, 0, 80, 500, NAVY3); //sidebar
   homelayout();
   statusbar();
 }
