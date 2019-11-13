@@ -34,7 +34,7 @@ SoftwareSerial esp8266(RX, TX);
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
 float versnum = 0.54;
-int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2=12, date3=1, date4=2019, weatherdigit = 69,viewdate; //ints delivered by ESP8266
+int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2=12, date3=1, date4=2019, weatherdigit = 69,viewdate, initclock=1; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
@@ -112,12 +112,11 @@ void cover() {
 void calendarlayout() {
   slidepage=80;
   viewdate = date1;
-  tft.fillScreen(WHITE);
-  tft.setTextColor(WHITE);
+  tft.fillScreen(NAVY3);
+  tft.setTextColor(FONT);
   tft.setTextSize(1);
-  tft.setCursor(5, 20);
-  tft.setFont("FreeSans18pt7b.h");
-  tft.print("Today is: ");
+  tft.setCursor(90, 30);
+  tft.setFont(&FreeSans18pt7b);
   tft.print(date2);
   tft.print("/");
   tft.print(date3);
@@ -132,15 +131,15 @@ void drawcalendar(){
   }else if (viewdate == 1){//tuesday
     sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=FONT;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
   }else if (viewdate == 2){//wednesday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=FONT;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=NAVY1;  wednesdaycolor=FONT;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
   }else if (viewdate == 3){//thursday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=FONT;  fridaycolor=NAVY1;  saturdaycolor=RED;
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=FONT;  fridaycolor=NAVY1;  saturdaycolor=RED;
   }else if (viewdate == 4){//friday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=FONT;  saturdaycolor=RED;
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=FONT;  saturdaycolor=RED;
   }else if (viewdate == 5){//saturday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=FONT;
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=FONT;
   }else if (viewdate == 6){//sunday
-    sundaycolor=FONT;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+    sundaycolor=FONT;  mondaycolor=NAVY1;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
   }
   tft.fillRect(0,60, 47, 30, sundaycolor); 
   tft.fillRect(47,60, 45, 30, mondaycolor); 
@@ -150,14 +149,12 @@ void drawcalendar(){
   tft.fillRect(227,60, 45, 30, fridaycolor); 
   tft.fillRect(270,60, 50, 30, saturdaycolor); 
 
-  tft.drawLine(0,60, 0, 90, WHITE); 
   tft.drawLine(47,60, 47, 90, WHITE); 
   tft.drawLine(92,60, 92, 90, WHITE); 
   tft.drawLine(137,60, 137, 90, WHITE); 
   tft.drawLine(182,60, 182, 90, WHITE); 
   tft.drawLine(227,60, 227, 90, WHITE); 
   tft.drawLine(270,60, 270, 90, WHITE);
-  tft.drawRect(0,60, 47, 35, WHITE); 
   tft.drawLine(0,60, 320, 60, WHITE);
   tft.setTextColor(WHITE);
   tft.setTextSize(2);
@@ -170,7 +167,7 @@ void drawcalendar(){
   tft.setCursor(0, slidepage + 17); //set cursor
   tft.setFont();
   tft.println("  0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
-  tft.fillRect(0, slidepage - 1 + (16 * time1), 340, 2, RED); //marker saying where you are in claendar
+  tft.fillRect(0, slidepage - 1 + (16 * time1)+6, 340, 2, RED); //marker saying where you are in claendar
   char ENG[28] = "Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
   char CALCULUS[23] = "Calculus and Functions";
@@ -447,9 +444,11 @@ void setup() {
   tft.invertDisplay(1);
   //tft.fillScreen(NAVY1);
   //tft.fillRect(240, 0, 80, 500, NAVY3); //sidebar
+  
   homelayout();
-  statusbar();
+  //statusbar();
 }
+
 void loop() {
   digitalWrite(13, HIGH);//hell if i know
   TSPoint p = ts.getPoint();//get touch point
@@ -684,21 +683,21 @@ void loop() {
     if (time1 == 23) {
       time1 = 0;
     }
-    statusbar();
+    
     if (page == 0) {
-      GFXcanvas1 *_canvas;
-      _canvas = new GFXcanvas1(76, 128);
-      _canvas->fillScreen(WHITE);
-      _canvas->setFont(&FreeSans18pt7b);
-      _canvas->setTextColor(BLACK);
-      _canvas->setTextSize(2);
-      _canvas->setCursor(0, 54);
-      _canvas->println(time1);
-      _canvas->setCursor(0, 119);
-      _canvas->print(time21);
-      _canvas->print(time22);
-      tft.drawBitmap(82, 176, _canvas->getBuffer(), 76, 128, NAVY2, FONT);
-      delete _canvas;
+      
+      //delete _canvas;
+      tft.fillRect(82,176,76,128, NAVY2);
+      tft.setFont(&FreeSans18pt7b);
+      tft.setCursor(82, 230); //setting cursor for text
+      tft.setTextColor(FONT);
+      tft.setTextSize(2);
+      tft.println(time1);
+      tft.setCursor(82, 295); //setting cursor for text
+      tft.print(time21);
+      tft.print(time22);
+    }else{
+      statusbar();
     }
   }
   delay(1);
