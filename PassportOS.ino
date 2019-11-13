@@ -34,7 +34,7 @@ SoftwareSerial esp8266(RX, TX);
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
 float versnum = 0.54;
-int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2, date3, weatherdigit = 69; //ints delivered by ESP8266
+int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2=12, date3=1, date4=2019, weatherdigit = 69,viewdate; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
@@ -111,46 +111,60 @@ void cover() {
 }
 void calendarlayout() {
   slidepage=80;
+  viewdate = date1;
   tft.fillScreen(WHITE);
-  if (date1 == 0){//monday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
-  }else if (date1 == 1){//tuesday
-    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=FONT;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
-  }else if (date1 == 2){//wednesday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=FONT;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
-  }else if (date1 == 3){//thursday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=FONT;  fridaycolor=NAVY1;  saturdaycolor=RED;
-  }else if (date1 == 4){//friday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=FONT;  saturdaycolor=RED;
-  }else if (date1 == 5){//saturday
-    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=FONT;
-  }else if (date1 == 6){//sunday
-    sundaycolor=FONT;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
-  }
-  tft.fillRect(0,60, 47, 30, sundaycolor); //cool bg
-  tft.fillRect(47,60, 45, 30, mondaycolor); //cool bg
-  tft.fillRect(92,60, 45, 30, tuesdaycolor); //cool bg
-  tft.fillRect(137,60, 45, 30, wednesdaycolor); //cool bg
-  tft.fillRect(182,60, 45, 30, thursdaycolor); //cool bg
-  tft.fillRect(227,60, 45, 30, fridaycolor); //cool bg
-  tft.fillRect(270,60, 50, 30, saturdaycolor); //cool bg
-
-  tft.drawRect(0,60, 47, 35, WHITE); //cool bg
-  tft.drawRect(47,60, 45, 35, WHITE); //cool bg
-  tft.drawRect(92,60, 45, 35, WHITE); //cool bg
-  tft.drawRect(137,60, 45, 35, WHITE); //cool bg
-  tft.drawRect(182,60, 45, 35, WHITE); //cool bg
-  tft.drawRect(227,60, 45, 35, WHITE); //cool bg
-  tft.drawRect(270,60, 50, 35, WHITE); //cool bg
   tft.setTextColor(WHITE);
-  tft.setTextSize(2);
-  tft.setCursor(6, 68); tft.print("SUN"); tft.setCursor(53, 65); tft.print("MON"); tft.setCursor(97, 65); tft.print("TUE"); tft.setCursor(143, 65); tft.print("WED"); tft.setCursor(187, 65); tft.print("THU"); tft.setCursor(233, 65); tft.print("FRI"); tft.setCursor(278, 65); tft.print("SAT");
-  
+  tft.setTextSize(1);
+  tft.setCursor(5, 20);
+  tft.setFont("FreeSans18pt7b.h");
+  tft.print("Today is: ");
+  tft.print(date2);
+  tft.print("/");
+  tft.print(date3);
+  tft.print("/");
+  tft.print(date4);
+  tft.setFont();
   drawcalendar();
 }
 void drawcalendar(){
+  if (viewdate == 0){//monday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (viewdate == 1){//tuesday
+    sundaycolor=RED;  mondaycolor=NAVY1;  tuesdaycolor=FONT;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (viewdate == 2){//wednesday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=FONT;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (viewdate == 3){//thursday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=FONT;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }else if (viewdate == 4){//friday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=FONT;  saturdaycolor=RED;
+  }else if (viewdate == 5){//saturday
+    sundaycolor=RED;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=FONT;
+  }else if (viewdate == 6){//sunday
+    sundaycolor=FONT;  mondaycolor=FONT;  tuesdaycolor=NAVY1;  wednesdaycolor=NAVY1;  thursdaycolor=NAVY1;  fridaycolor=NAVY1;  saturdaycolor=RED;
+  }
+  tft.fillRect(0,60, 47, 30, sundaycolor); 
+  tft.fillRect(47,60, 45, 30, mondaycolor); 
+  tft.fillRect(92,60, 45, 30, tuesdaycolor); 
+  tft.fillRect(137,60, 45, 30, wednesdaycolor); 
+  tft.fillRect(182,60, 45, 30, thursdaycolor); 
+  tft.fillRect(227,60, 45, 30, fridaycolor); 
+  tft.fillRect(270,60, 50, 30, saturdaycolor); 
+
+  tft.drawLine(0,60, 0, 90, WHITE); 
+  tft.drawLine(47,60, 47, 90, WHITE); 
+  tft.drawLine(92,60, 92, 90, WHITE); 
+  tft.drawLine(137,60, 137, 90, WHITE); 
+  tft.drawLine(182,60, 182, 90, WHITE); 
+  tft.drawLine(227,60, 227, 90, WHITE); 
+  tft.drawLine(270,60, 270, 90, WHITE);
+  tft.drawRect(0,60, 47, 35, WHITE); 
+  tft.drawLine(0,60, 320, 60, WHITE);
+  tft.setTextColor(WHITE);
+  tft.setTextSize(2);
+  tft.setCursor(6, 68); tft.print("SUN"); tft.setCursor(53, 68); tft.print("MON"); tft.setCursor(97, 68); tft.print("TUE"); tft.setCursor(143, 68); tft.print("WED"); tft.setCursor(187, 68); tft.print("THU"); tft.setCursor(233, 68); tft.print("FRI"); tft.setCursor(278, 68); tft.print("SAT");
+  
   tft.setTextColor(NAVY3);
-  tft.fillRect(0, slidepage + 10, 340, 390, FONT); //cool bg
+  tft.fillRect(0, slidepage + 10, 340, 390, FONT); 
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 17); //set cursor
@@ -161,26 +175,26 @@ void drawcalendar(){
   char EXAM[19] = "Common Exam Period";
   char CALCULUS[23] = "Calculus and Functions";
   char CHEM[18] = "General Chemistry";
-  if (date1 == 0) {
+  if (viewdate == 0) {
     eventload(8, EXAM," 8");
     eventload(10, CALCULUS,"10");
     event2hour(12, "Composition and Rhetoric","12","13");
     eventload(14, ENG,"14");
     eventload(15, ENG,"15");
-  } else if (date1 == 1) {
+  } else if (viewdate == 1) {
     event2hour(10, ENG,"10","11");
     eventload(12, CHEM,"12");
-  } else if (date1 == 2) {
+  } else if (viewdate == 2) {
     eventload(8, EXAM," 8");
     eventload(10, CALCULUS,"10");
     eventload(13, CHEM,"13");
     eventload(16, "The Drexel Experience","10");
     eventload(18, EXAM,"18");
-  } else if (date1 == 3) {
+  } else if (viewdate == 3) {
     eventload(10, CALCULUS,"10");
     eventload(12, CHEM,"12");
     event2hour(14, CHEM,"14","15");
-  } else if (date1 == 4) {
+  } else if (viewdate == 4) {
     eventload(8, EXAM," 8");
     eventload(10, CALCULUS,"10");
   }
@@ -227,7 +241,7 @@ void drawcalendar(){
 
     _scroll = new GFXcanvas1(320, 480-px/2);
     _scroll->setTextColor(BLACK);
-    _scroll->fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
+    _scroll->fillRect(0, slidepage + 10, 340, 800, FONT); 
     _scroll->setTextColor(BLACK);
     _scroll->setTextSize(1);
     _scroll->setCursor(0, slidepage + 15); //set cursor
@@ -240,7 +254,7 @@ void drawcalendar(){
 
   //clocklarge();
   tft.setTextColor(NAVY3);
-  tft.fillRect(0, slidepage + 10, 340, 800, FONT); //cool bg
+  tft.fillRect(0, slidepage + 10, 340, 800, FONT); 
   tft.setTextColor(BLACK);
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 15); //set cursor
@@ -311,7 +325,7 @@ void eventload(float eventtime, char eventname[28],char eventtimeread[2]) {
 }
 void memolayout() {
   tft.fillScreen(BLACK);
-  tft.fillRoundRect(0, 10, 320, 480, 30, WHITE); //cool bg
+  tft.fillRoundRect(0, 10, 320, 480, 30, WHITE); 
   int drawlinememo = 9;
   int curdrawline = 1;
   while (drawlinememo >= curdrawline ) {
@@ -319,11 +333,11 @@ void memolayout() {
     curdrawline++;
   }
   drawpastmemo();
-  tft.fillRoundRect(0, 290, 320, 250, 30, NAVY3); //cool bg
-  tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
-  tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
-  tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
-  tft.fillRoundRect(0, 460, 320, 80, 15, NAVY1); //cool bg
+  tft.fillRoundRect(0, 290, 320, 250, 30, NAVY3); 
+  tft.fillRoundRect(15, 310, 90, 140, 15, FONT); 
+  tft.fillRoundRect(115, 310, 90, 140, 15, FONT); 
+  tft.fillRoundRect(215, 310, 90, 140, 15, FONT); 
+  tft.fillRoundRect(0, 460, 320, 80, 15, NAVY1); 
   tft.setFont(&FreeSans9pt7b);
   tft.setTextColor(FONT);
   tft.setTextSize(1);
@@ -455,15 +469,15 @@ void loop() {
     Serial.print(" y- ");
     Serial.println(p.y);
     if ((0 < p.x && p.x < 275)) { //go home code
-    if ((0 < p.y && p.y < 150) || homepasty2 != 0) { //check if in top of Screen
-      if ((0 < homepasty && homepasty < 150)) { //check if in a few secs you still there
+    if ((0 < p.y && p.y < 20) || homepasty2 != 0) { //check if in top of Screen
+      if ((0 < homepasty && homepasty < 20)) { //check if in a few secs you still there
         tft.fillRect(0, 0, 320, 10, GREEN); //say you good to go
-        if ((150 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
+        if ((20 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
           homepasty = 0;
           homepasty2 = 0;
           Serial.print("going home...");
           cover();
-        } else if ((0 < homepasty2 && homepasty2 < 150)) { //check if you havent moved
+        } else if ((0 < homepasty2 && homepasty2 < 20)) { //check if you havent moved
           homepasty = 0;
           homepasty2 = 0;
           statusbar();
@@ -491,7 +505,7 @@ void loop() {
         p.y = tft.height() - (map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
         homepasty = p.y; //set pastx to p.x to compare
       }
-    } else if ((0 < homepasty && homepasty < 150 && homepasty2 <= 150)) { //if you arent there anymore set pastx to 0
+    } else if ((0 < homepasty && homepasty < 20 && homepasty2 <= 20)) { //if you arent there anymore set pastx to 0
       homepasty = 0;
       homepasty2 = 0;
       statusbar();
@@ -511,9 +525,29 @@ void loop() {
         }
       }
     } else if (page == 1) { //calendar
-      if ((280 < p.x && p.x < 320)) { //check if in x
-        slidepage = 380 - p.y * 1.5;
-        calendarlayout();
+      if ((60 < p.y && p.y < 100)) { 
+        if ((0 < p.x && p.x < 47)) { 
+          viewdate=6;
+          drawcalendar();
+        }else if ((47 < p.x && p.x < 92)) { 
+          viewdate=0;
+          drawcalendar();
+        }else if ((92 < p.x && p.x < 137)) { 
+          viewdate=1;
+          drawcalendar();
+        }else if ((137 < p.x && p.x < 182)) { 
+          viewdate=2;
+          drawcalendar();
+        }else if ((182 < p.x && p.x < 227)) { 
+          viewdate=3;
+          drawcalendar();
+        }else if ((227 < p.x && p.x < 270)) { 
+          viewdate=4;
+          drawcalendar();
+        }else if ((270 < p.x && p.x < 320)) { 
+          viewdate=5;
+          drawcalendar();
+        }
       }
     } else if (page == 2) { //calculator
 
@@ -606,11 +640,11 @@ void loop() {
           stroke = 0;
 
           if (p.x < 107 && p.x > 16) { //check which box it is in
-            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); //cool bg
+            tft.fillRoundRect(215, 310, 90, 140, 15, FONT); 
           } else if (p.x < 215 && p.x > 115) { //check which box it is in
-            tft.fillRoundRect(15, 310, 90, 140, 15, FONT); //cool bg
+            tft.fillRoundRect(15, 310, 90, 140, 15, FONT); 
           } else if (p.x < 320 && p.x > 215) { //check which box it is in
-            tft.fillRoundRect(115, 310, 90, 140, 15, FONT); //cool bg
+            tft.fillRoundRect(115, 310, 90, 140, 15, FONT); 
           }
         } else if (pastbox == 1 && curbox == 3 || pastbox == 2 && curbox == 1 || pastbox == 3 && curbox == 2) { //jump a letter (space!)
           letter = letter + 2;
