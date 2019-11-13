@@ -116,7 +116,7 @@ void calendarlayout() {
   tft.setTextSize(1);
   tft.setCursor(0, slidepage + 15); //set cursor
   tft.setFont(&FreeSans9pt7b);
-  tft.println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
+  tft.println("  0:00\n\n  1:00\n\n  2:00\n\n  3:00\n\n  4:00\n\n  5:00\n\n  6:00\n\n  7:00\n\n  8:00\n\n  9:00\n\n 10:00\n\n 11:00\n\n 12:00\n\n 13:00\n\n 14:00\n\n 15:00\n\n 16:00\n\n 17:00\n\n 18:00\n\n 19:00\n\n 20:00\n\n 21:00\n\n 22:00\n\n 23:00\n");
   tft.fillRect(0, slidepage - 1 + (16 * time1), 340, 2, RED); //marker saying where you are in claendar
   char ENG[28] = "Intro to Engineering Design";
   char EXAM[19] = "Common Exam Period";
@@ -192,7 +192,7 @@ void calendarlayout() {
     _scroll->setTextColor(BLACK);
     _scroll->setTextSize(1);
     _scroll->setCursor(0, slidepage + 15); //set cursor
-    _scroll->println("  0:00\n\n\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
+    _scroll->println("  0:00\n\n  1:00\n\n\n\n  2:00\n\n\n\n  3:00\n\n\n\n  4:00\n\n\n\n  5:00\n\n\n\n  6:00\n\n\n\n  7:00\n\n\n\n  8:00\n\n\n\n  9:00\n\n\n\n 10:00\n\n\n\n 11:00\n\n\n\n 12:00\n\n\n\n 13:00\n\n\n\n 14:00\n\n\n\n 15:00\n\n\n\n 16:00\n\n\n\n 17:00\n\n\n\n 18:00\n\n\n\n 19:00\n\n\n\n 20:00\n\n\n\n 21:00\n\n\n\n 22:00\n\n\n\n 23:00\n");
     _scroll->fillRect(0, slidepage - 1 + (32 * time1), 260, 2, RED); //marker saying where you are in claendar
     //_scroll->print(time21);
     //_scroll->print(time22);
@@ -251,15 +251,15 @@ void calendarlayout() {
   }
 */
 void event2hour(float eventtime, char eventname[28]) {
-  tft.fillRect(40, slidepage + 4 + (32 * eventtime), 230, 60, NAVY1); //marker saying where you are in claendar
-  tft.setTextColor(FONT); tft.setTextSize(1);
-  tft.setCursor(45, slidepage + 5 + (32 * eventtime)); //setting cursor for text
+  tft.fillRect(40, slidepage + 4 + (32 * eventtime)-80, 230, 100, NAVY1); //marker saying where you are in claendar
+  tft.setTextColor(RED); tft.setTextSize(1);
+  tft.setCursor(45, slidepage + 20 + (32 * eventtime)-80); //setting cursor for text
   tft.println(eventname);
 }
 void eventload(float eventtime, char eventname[28]) {
-  tft.fillRect(40, slidepage + 4 + (32 * eventtime), 230, 26, NAVY1); //marker saying where you are in claendar
-  tft.setTextColor(FONT); tft.setTextSize(1);
-  tft.setCursor(45, slidepage + 5 + (32 * eventtime)); //setting cursor for text
+  tft.fillRect(40, slidepage + 4 + (32 * eventtime)-80, 230, 60, NAVY1); //marker saying where you are in claendar
+  tft.setTextColor(RED); tft.setTextSize(1);
+  tft.setCursor(45, slidepage + 20 + (32 * eventtime)-80); //setting cursor for text
   tft.println(eventname);
 }
 void memolayout() {
