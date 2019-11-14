@@ -2,6 +2,7 @@
 #include <Adafruit_TFTLCD.h> // Hardware-specific library
 #include <TouchScreen.h>
 #include <SoftwareSerial.h>//serial communication to the EsP8266
+#include <Fonts/FreeSansBold24pt7b.h>//font
 #include <Fonts/FreeSans18pt7b.h>//font
 #include <Fonts/FreeSans9pt7b.h>//font
 #include "images.h"
@@ -40,7 +41,7 @@ int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
 int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
-int characterlist[16][180];
+int characterlist[54][60];
 unsigned int sundaycolor, mondaycolor, tuesdaycolor, wednesdaycolor, thursdaycolor, fridaycolor, saturdaycolor;
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
@@ -100,18 +101,20 @@ void cover() {
   homelayout();
 }
 void calendarlayout() {
-  slidepage = 80;
+  slidepage = 90;
   viewdate = date1;
   tft.fillScreen(NAVY3);
+  statusbar();
   tft.setTextColor(FONT);
   tft.setTextSize(1);
-  tft.setCursor(80, 50);
-  tft.setFont(&FreeSans18pt7b);
+  tft.setCursor(15, 50);
+  tft.setFont(&FreeSansBold24pt7b);
   tft.print(date2);
   tft.print("/");
   tft.print(date3);
   tft.print("/");
   tft.print(date4);
+  tft.drawBitmap(255, 15, calendaricon, 50, 50, FONT); //calendar icon
   tft.setFont();
   drawcalendar();
 }
@@ -131,23 +134,23 @@ void drawcalendar() {
   } else if (viewdate == 6) { //sunday
     sundaycolor = FONT;  mondaycolor = NAVY1;  tuesdaycolor = NAVY1;  wednesdaycolor = NAVY1;  thursdaycolor = NAVY1;  fridaycolor = NAVY1;  saturdaycolor = RED;
   }
-  tft.fillRect(0, 60, 47, 30, sundaycolor);
-  tft.fillRect(47, 60, 45, 30, mondaycolor);
-  tft.fillRect(92, 60, 45, 30, tuesdaycolor);
-  tft.fillRect(137, 60, 45, 30, wednesdaycolor);
-  tft.fillRect(182, 60, 45, 30, thursdaycolor);
-  tft.fillRect(227, 60, 45, 30, fridaycolor);
-  tft.fillRect(270, 60, 50, 30, saturdaycolor);
-  tft.drawLine(47, 60, 47, 90, WHITE);
-  tft.drawLine(92, 60, 92, 90, WHITE);
-  tft.drawLine(137, 60, 137, 90, WHITE);
-  tft.drawLine(182, 60, 182, 90, WHITE);
-  tft.drawLine(227, 60, 227, 90, WHITE);
-  tft.drawLine(270, 60, 270, 90, WHITE);
-  tft.drawLine(0, 60, 320, 60, WHITE);
+  tft.fillRect(0, 70, 47, 30, sundaycolor);
+  tft.fillRect(47, 70, 45, 30, mondaycolor);
+  tft.fillRect(92, 70, 45, 30, tuesdaycolor);
+  tft.fillRect(137, 70, 45, 30, wednesdaycolor);
+  tft.fillRect(182, 70, 45, 30, thursdaycolor);
+  tft.fillRect(227, 70, 45, 30, fridaycolor);
+  tft.fillRect(270, 70, 50, 30, saturdaycolor);
+  tft.drawLine(47, 70, 47, 100, WHITE);
+  tft.drawLine(92, 70, 92, 100, WHITE);
+  tft.drawLine(137, 70, 137, 100, WHITE);
+  tft.drawLine(182, 70, 182, 100, WHITE);
+  tft.drawLine(227, 70, 227, 100, WHITE);
+  tft.drawLine(270, 70, 270, 100, WHITE);
+  tft.drawLine(0, 70, 320, 70, WHITE);
   tft.setTextColor(WHITE);
   tft.setTextSize(2);
-  tft.setCursor(6, 68); tft.print("SUN"); tft.setCursor(53, 68); tft.print("MON"); tft.setCursor(97, 68); tft.print("TUE"); tft.setCursor(143, 68); tft.print("WED"); tft.setCursor(187, 68); tft.print("THU"); tft.setCursor(233, 68); tft.print("FRI"); tft.setCursor(278, 68); tft.print("SAT");
+  tft.setCursor(6, 78); tft.print("SUN"); tft.setCursor(53, 78); tft.print("MON"); tft.setCursor(97, 78); tft.print("TUE"); tft.setCursor(143, 78); tft.print("WED"); tft.setCursor(187, 78); tft.print("THU"); tft.setCursor(233, 78); tft.print("FRI"); tft.setCursor(278, 78); tft.print("SAT");
   tft.setTextColor(NAVY3);
   tft.fillRect(0, slidepage + 10, 340, 390, FONT);
   tft.setTextColor(BLACK);
@@ -205,8 +208,9 @@ void eventload(float eventtime, char eventname[28], char eventtimeread[2]) {
   tft.println(eventname);
 }
 void memolayout() {
-  tft.fillScreen(BLACK);
-  tft.fillRoundRect(0, 10, 320, 480, 30, WHITE);
+  tft.fillRect(0,0,320,50,BLACK);
+  tft.fillRoundRect(0, 10, 320, 65, 30, WHITE);
+  tft.fillRect(0,35,320,450,WHITE);
   int drawlinememo = 9;
   int curdrawline = 1;
   while (drawlinememo >= curdrawline ) {
@@ -228,18 +232,25 @@ void memolayout() {
 void drawpastmemo() {
   i2 = 1;
   i = 4;
-  while (i2 <= 15) {
-    while (i <= 178) {//198
+  while (i2 <= 54) {
+    if (characterlist[i2][i] == 0){
+      i=180;
+    }
+    while (i <= 68) {//198
       i3 = characterlist[i2][i];
       i4 = characterlist[i2][i + 1];
       i3past = characterlist[i2][i - 2];
       i4past = characterlist[i2][i - 1];
       if (i3 != 0) {
-        if (i2 <= 15) {
+        if (i2 <= 18) {
           //tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4, 1, BLACK);
           tft.fillCircle(i3 / 4 + (i2 * 17) - 10, i4 / 4 - 70, 1, BLACK);
-        } else if (i2 <= 30) {
-          tft.fillCircle(i3 / 4 + ((i2 - 15) * 17) - 10, i4 / 4 - (70 + (i2 * 10)), 1, BLACK);
+        } else if (i2 <= 36) {
+          i5=i2-18;
+          tft.fillCircle(i3 / 4 + (i5 * 17) - 10, i4 / 4 - 30, 1, BLACK);
+        } else if (i2 <= 54) {
+          i5=i2-36;
+          tft.fillCircle(i3 / 4 + (i5 * 17) - 10, i4 / 4 , 1, BLACK);
         }
       }
       Serial.print("i2-");  Serial.print(i2);  Serial.print("| i-");  Serial.print(i);  Serial.print("| 0-");  Serial.print(characterlist[i2][i]);  Serial.print("| 1-");  Serial.println(characterlist[i2][i + 1]);
@@ -307,21 +318,21 @@ void loop() {
     Serial.print(" y- ");
     Serial.println(p.y);
     if ((0 < p.x && p.x < 275)) { //go home code
-      if ((0 < p.y && p.y < 20) || homepasty2 != 0) { //check if in top of Screen
-        if ((0 < homepasty && homepasty < 20)) { //check if in a few secs you still there
+      if ((0 < p.y && p.y < 40) || homepasty2 != 0) { //check if in top of Screen
+        if ((0 < homepasty && homepasty < 40)) { //check if in a few secs you still there
           tft.fillRect(0, 0, 320, 10, GREEN); //say you good to go
-          if ((20 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
+          if ((40 < homepasty2 && homepasty2 < 480)) { //check if in a few secs you moved down
             homepasty = 0;
             homepasty2 = 0;
             Serial.print("going home...");
             cover();
-          } else if ((0 < homepasty2 && homepasty2 < 20)) { //check if you havent moved
+          } else if ((0 < homepasty2 && homepasty2 < 40)) { //check if you havent moved
             homepasty = 0;
             homepasty2 = 0;
             statusbar();
-            delay(1000);
-          } else {
             delay(600);
+          } else {
+            delay(400);
             TSPoint p = ts.getPoint();//get touch point
             p.x = p.x + p.y;
             p.y = p.x - p.y;
@@ -331,7 +342,7 @@ void loop() {
             homepasty2 = p.y; //set pastx to p.x to compare
           }
         } else {
-          delay(300);
+          delay(200);
           TSPoint p = ts.getPoint();//get touch point
           p.x = p.x + p.y;
           p.y = p.x - p.y;
@@ -360,7 +371,7 @@ void loop() {
         }
       }
     } else if (page == 1) { //calendar
-      if ((60 < p.y && p.y < 100)) {
+      if ((70 < p.y && p.y < 110)) {
         if ((0 < p.x && p.x < 47)) {
           viewdate = 6;
           drawcalendar();
@@ -423,21 +434,41 @@ void loop() {
           Serial.println("WROTE!");
         }
       }
-      if (p.x < 107 && p.x > 16) { //check which box it is in
-        tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
-        pastbox = curbox;
-        curbox = 1;
-      } else if (p.x < 215 && p.x > 115) { //check which box it is in
-        tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
-        pastbox = curbox;
-        curbox = 2;
-      } else if (p.x < 320 && p.x > 215) { //check which box it is in
-        tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
-        tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
-        pastbox = curbox;
-        curbox = 3;
+      if (p.y > 310 && p.y <450){
+        if (p.x < 107 && p.x > 16) { //check which box it is in
+          tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
+          if (letter <=18){
+            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
+          } else if (letter <=36){
+            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+          } else if (letter <=54){
+            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+          }
+          pastbox = curbox;
+          curbox = 1;
+        } else if (p.x < 215 && p.x > 115) { //check which box it is in
+          tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
+          if (letter <=18){
+            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
+          } else if (letter <=36){
+            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+          } else if (letter <=54){
+            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+          }    
+          pastbox = curbox;
+          curbox = 2;
+        } else if (p.x < 320 && p.x > 215) { //check which box it is in
+          tft.fillCircle(p.x, p.y, 4, BLACK);//draw when you write
+          if (letter <=18){
+            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
+          } else if (letter <=36){
+            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+          } else if (letter <=54){
+            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+          }     
+          pastbox = curbox;
+          curbox = 3;
+        }
       }
       if (pastbox != curbox) {
         if (pastbox == 0 && curbox == 1 || pastbox == 1 && curbox == 2 || pastbox == 2 && curbox == 3 || pastbox == 3 && curbox == 1) { //next letter
