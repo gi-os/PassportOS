@@ -5,6 +5,8 @@
 #include <Fonts/FreeSansBold24pt7b.h>//font
 #include <Fonts/FreeSans18pt7b.h>//font
 #include <Fonts/FreeSans9pt7b.h>//font
+#include <Fonts/FreeMono12pt7b.h>//font
+#include <Fonts/FreeMono24pt7b.h>//font
 #include "images.h"
 #include <MCUFRIEND_kbv.h>
 MCUFRIEND_kbv tft;
@@ -32,9 +34,12 @@ SoftwareSerial esp8266(RX, TX);
 #define NAVY2   0x100D//not that dark
 #define NAVY3   0x100A//darkest
 #define FONT    0xE71C//gray used for fonts (looks sexier)
+#define GREY1   0x52AA
+#define GREY2   0x39C7
+#define GREY3   0x7BCF
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
-float versnum = 0.55;
+float versnum = 0.56;
 int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2 = 12, date3 = 1, date4 = 2019, weatherdigit = 69, viewdate, initclock = 1; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
@@ -43,6 +48,7 @@ int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
 int letter = 0, stroke = 0, curbox, pastbox, i2, i, i3, i4, i5, i6, i7, i4past, i3past;
 int characterlist[54][60];
 unsigned int sundaycolor, mondaycolor, tuesdaycolor, wednesdaycolor, thursdaycolor, fridaycolor, saturdaycolor;
+unsigned long int digitadd, calcvaluecur, calcvalue1, calcvalue2, calcaction =0, activatecalc, addzero=0;
 void statusbar() {
   tft.fillRect(0, 0, 320, 10, BLACK); //bg
   tft.setFont();
@@ -54,14 +60,10 @@ void statusbar() {
   tft.print(time21);
   tft.print(time22);
   tft.setCursor(285, 2); //setting cursor for text
+  tft.print("v");
   tft.print(versnum);
 }
 void homelayout() {
-  uint16_t identifier = tft.readID();
-  tft.begin(identifier);
-  tft.invertDisplay(1);
-  tft.fillScreen(NAVY1);
-  tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
   page = 0;
   //images
   tft.drawBitmap(256, 20, glogo, 50, 79, FONT); //g logo image
@@ -97,7 +99,7 @@ void cover() {
   tft.fillRect(0, 472, 240, 8, NAVY1); //draw bg as scroll
   tft.fillRect(240, 472, 80, 8, NAVY3); //draw sidebar as scroll
   scrollcur = 0;
-  statusbar();
+  //statusbar();
   homelayout();
 }
 void calendarlayout() {
@@ -134,19 +136,9 @@ void drawcalendar() {
   } else if (viewdate == 6) { //sunday
     sundaycolor = FONT;  mondaycolor = NAVY1;  tuesdaycolor = NAVY1;  wednesdaycolor = NAVY1;  thursdaycolor = NAVY1;  fridaycolor = NAVY1;  saturdaycolor = RED;
   }
-  tft.fillRect(0, 70, 47, 30, sundaycolor);
-  tft.fillRect(47, 70, 45, 30, mondaycolor);
-  tft.fillRect(92, 70, 45, 30, tuesdaycolor);
-  tft.fillRect(137, 70, 45, 30, wednesdaycolor);
-  tft.fillRect(182, 70, 45, 30, thursdaycolor);
-  tft.fillRect(227, 70, 45, 30, fridaycolor);
-  tft.fillRect(270, 70, 50, 30, saturdaycolor);
-  tft.drawLine(47, 70, 47, 100, WHITE);
-  tft.drawLine(92, 70, 92, 100, WHITE);
-  tft.drawLine(137, 70, 137, 100, WHITE);
-  tft.drawLine(182, 70, 182, 100, WHITE);
-  tft.drawLine(227, 70, 227, 100, WHITE);
-  tft.drawLine(270, 70, 270, 100, WHITE);
+  tft.fillRect(0, 70, 47, 30, sundaycolor);  tft.fillRect(47, 70, 45, 30, mondaycolor);  tft.fillRect(92, 70, 45, 30, tuesdaycolor);  tft.fillRect(137, 70, 45, 30, wednesdaycolor);  tft.fillRect(182, 70, 45, 30, thursdaycolor);  tft.fillRect(227, 70, 45, 30, fridaycolor);  tft.fillRect(270, 70, 50, 30, saturdaycolor);
+  tft.drawLine(47, 70, 47, 100, WHITE);  tft.drawLine(92, 70, 92, 100, WHITE);  tft.drawLine(137, 70, 137, 100, WHITE);  tft.drawLine(182, 70, 182, 100, WHITE);
+  tft.drawLine(227, 70, 227, 100, WHITE);  tft.drawLine(270, 70, 270, 100, WHITE);
   tft.drawLine(0, 70, 320, 70, WHITE);
   tft.setTextColor(WHITE);
   tft.setTextSize(2);
@@ -207,6 +199,52 @@ void eventload(float eventtime, char eventname[28], char eventtimeread[2]) {
   tft.setCursor(45, slidepage + 6 + (16 * eventtime) + 11); //setting cursor for text
   tft.println(eventname);
 }
+void calculatorlayout() {
+  drawcalculator();
+  tft.fillRect(0,110,320,430,GREY1);
+  tft.fillRoundRect(2  , 114, 76, 88, 2,GREY2);  tft.fillRoundRect(82 , 114, 76, 88, 2,GREY2);  tft.fillRoundRect(162, 114, 76, 88, 2,GREY2);  tft.fillRoundRect(242, 114, 76, 88, 2,GREY2);
+  tft.fillRoundRect(2  , 206, 76, 88, 2,GREY2);  tft.fillRoundRect(82 , 206, 76, 88, 2,GREY2);  tft.fillRoundRect(162, 206, 76, 88, 2,GREY2);  tft.fillRoundRect(242, 206, 76, 88, 2,GREY2);
+  tft.fillRoundRect(2  , 298, 76, 88, 2,GREY2);  tft.fillRoundRect(82 , 298, 76, 88, 2,GREY2);  tft.fillRoundRect(162, 298, 76, 88, 2,GREY2);  tft.fillRoundRect(242, 298, 76, 88, 2,GREY2);
+  tft.fillRoundRect(2  , 390, 76, 88, 2,GREY2);  tft.fillRoundRect(82 , 390, 76, 88, 2,GREY2);  tft.fillRoundRect(162, 390, 76, 88, 2,GREY2);  tft.fillRoundRect(242, 390, 76, 88, 2,GREY2);
+  tft.setTextColor(GREY1);
+  tft.setTextSize(1);
+  tft.setFont(&FreeMono24pt7b);
+  tft.setCursor(50, 194); tft.print("1");  tft.setCursor(130, 194); tft.print("2");  tft.setCursor(206, 194); tft.print("3");
+  tft.setCursor(50, 286); tft.print("4");  tft.setCursor(130, 286); tft.print("5");  tft.setCursor(206, 286); tft.print("6");
+  tft.setCursor(50, 378); tft.print("7");  tft.setCursor(130, 378); tft.print("8");  tft.setCursor(206, 378); tft.print("9");
+  tft.setCursor(130, 470); tft.print("0");
+  tft.setTextColor(GREY3);
+  tft.setCursor(50, 470); tft.print("C");  tft.setCursor(206, 470); tft.print("=");
+  tft.setCursor(286, 194); tft.print("/"); tft.setCursor(286, 286); tft.print("X"); tft.setCursor(286, 378); tft.print("-"); tft.setCursor(286, 470); tft.print("+");
+  tft.setFont();
+}
+void drawcalculator(){
+  tft.fillRect(0,00,320,110,BLACK);
+  tft.setTextColor(GREY1);
+  tft.setTextSize(1);
+  tft.setFont(&FreeMono12pt7b);
+  tft.setCursor(0, 30); 
+  if (calcvalue1 != 0){
+    tft.print(calcvalue1);    
+  }
+  if (calcaction == 1){
+    tft.print("/");
+  } else if (calcaction == 2){
+    tft.print("X");
+  } else if (calcaction == 3){
+    tft.print("-");
+  } else if (calcaction == 4){
+    tft.print("+");
+  }
+  if (calcvalue2 != 0){
+    tft.print(calcvalue2);
+  }
+  tft.setTextColor(GREY3);
+  tft.setTextSize(1);
+  tft.setFont(&FreeMono24pt7b);
+  tft.setCursor(0, 80); tft.print(calcvaluecur);
+  statusbar();
+}
 void memolayout() {
   tft.fillRect(0,0,320,50,BLACK);
   tft.fillRoundRect(0, 10, 320, 65, 30, WHITE);
@@ -250,7 +288,7 @@ void drawpastmemo() {
           tft.fillCircle(i3 / 4 + (i5 * 17) - 10, i4 / 4 - 30, 1, BLACK);
         } else if (i2 <= 54) {
           i5=i2-36;
-          tft.fillCircle(i3 / 4 + (i5 * 17) - 10, i4 / 4 , 1, BLACK);
+          tft.fillCircle(i3 / 4 + (i5 * 17) - 10, i4 / 4 - 10, 1, BLACK);
         }
       }
       Serial.print("i2-");  Serial.print(i2);  Serial.print("| i-");  Serial.print(i);  Serial.print("| 0-");  Serial.print(characterlist[i2][i]);  Serial.print("| 1-");  Serial.println(characterlist[i2][i + 1]);
@@ -259,6 +297,14 @@ void drawpastmemo() {
     i2++;
     i = 4;
   }
+}
+void rebootscreen(){
+  uint16_t identifier = tft.readID();
+  tft.begin(identifier);
+  tft.invertDisplay(1);
+  tft.fillScreen(NAVY1);
+  tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
+  homelayout();
 }
 void setup() {
   Serial.begin(115200);
@@ -299,6 +345,7 @@ void setup() {
   Serial.print("TFT size is "); Serial.print(tft.width()); Serial.print("x"); Serial.println(tft.height());
   tft.setRotation(0);
   tft.invertDisplay(1);
+  tft.fillScreen(NAVY1);
   homelayout();
 }
 void loop() {
@@ -359,10 +406,18 @@ void loop() {
     }
     if (page == 0) { //home page
       if ((256 < p.x && p.x < 320)) {//check in bar
+        if ((10 < p.y && p.y < 110)) {//reboot system
+          rebootscreen();
+        }
         if ((130 < p.y && p.y < 190)) {//calendar!
           page = 1;
           calendarlayout();
           statusbar();
+        }
+        if ((205 < p.y && p.y < 255)) {//calculator~
+            page = 2;
+            calculatorlayout();
+            statusbar();
         }
         if ((355 < p.y && p.y < 410)) {//memo!
           page = 4;
@@ -396,7 +451,100 @@ void loop() {
         }
       }
     } else if (page == 2) { //calculator
-
+      if (p.y >114 && p.y <466){
+        if (p.y >114 && p.y <200){
+          if (p.x >2 && p.x <78){
+            digitadd = 1;
+          } else if (p.x >82 && p.x <158){
+            digitadd = 2;
+          } else if (p.x >162 && p.x <238){
+            digitadd = 3;
+          } else if (p.x >242 && p.x <316){
+            calcaction=1;
+          }
+        } else if (p.y >206 && p.y <294){
+          if (p.x >2 && p.x <78){
+            digitadd = 4;
+          } else if (p.x >82 && p.x <158){
+            digitadd = 5;
+          } else if (p.x >162 && p.x <238){
+            digitadd = 6;
+          } else if (p.x >242 && p.x <316){
+            calcaction=2;
+          }
+        } else if (p.y >298 && p.y <386){
+          if (p.x >2 && p.x <78){
+            digitadd = 7;
+          } else if (p.x >82 && p.x <158){
+            digitadd = 8;
+          } else if (p.x >162 && p.x <238){
+            digitadd = 9;
+          } else if (p.x >242 && p.x <316){
+            calcaction=3;
+          }
+        } else if (p.y >390 && p.y <466){
+          if (p.x >2 && p.x <78){
+            calcaction=6;
+          } else if (p.x >82 && p.x <158){
+            digitadd = 0;
+            addzero = 1;
+          } else if (p.x >162 && p.x <238){
+            activatecalc=1;
+          } else if (p.x >242 && p.x <316){
+            calcaction=4;
+          }
+        } 
+        if (calcaction != 0){//check if an action has been requested
+          if (calcvalue2 == 0 && calcvalue1 ==0){//check if 1st box has been written in
+            calcvalue1 = calcvaluecur;
+            calcvaluecur = 0;
+          } if (calcvalue2 != 0 && calcvalue1 !=0){//check if both boxes have been filled
+            calcvalue1 = calcvaluecur;
+            calcvalue2 = 0;
+            calcvaluecur = 0;
+          } 
+          if (activatecalc== 1){//if equals was clicked
+            calcvalue2 = calcvaluecur;
+            calcvaluecur = 0;
+            if (calcaction ==1){//division
+              calcvaluecur = calcvalue1/calcvalue2;
+            } else if (calcaction ==2){//multiplication
+              calcvaluecur = calcvalue1*calcvalue2;
+            } else if (calcaction ==3){//subtraction
+              calcvaluecur = calcvalue1-calcvalue2;
+            } else if (calcaction ==4){//addition
+              calcvaluecur = calcvalue1+calcvalue2;
+            } 
+            if (calcvaluecur > 1000000000){//stop overflow errors
+              calcvaluecur=0;
+            }
+            //calcaction=0;
+            activatecalc=0;
+            //digitadd=0;
+          } else {
+            if (digitadd !=0 || addzero==1){
+              calcvaluecur = calcvaluecur*10+digitadd;
+              digitadd=0;
+              addzero=0;
+            }
+          }
+          if (calcaction == 6){
+            calcvalue2 = 0;
+            calcvalue1 = 0;
+            calcvaluecur = 0;
+            calcaction=0;
+            digitadd=0;
+          }
+        } else {
+          if (digitadd !=0 || addzero==1){
+            calcvaluecur = calcvaluecur*10+digitadd;
+            digitadd=0;
+            addzero=0;
+          }
+        }
+        
+        drawcalculator();
+      }
     } else if (page == 3) { //weather
 
     } else if (page == 4) { //memo
@@ -440,9 +588,9 @@ void loop() {
           if (letter <=18){
             tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
           } else if (letter <=36){
-            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 40, 1, BLACK);
           } else if (letter <=54){
-            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+            tft.fillCircle((p.x - 16) / 4 + (i6 * 17) + ((letter-36) * 17), p.y / 4 + (i7 * 10) - 10, 1, BLACK);
           }
           pastbox = curbox;
           curbox = 1;
@@ -451,9 +599,9 @@ void loop() {
           if (letter <=18){
             tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
           } else if (letter <=36){
-            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 40, 1, BLACK);
           } else if (letter <=54){
-            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+            tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-36) * 17), p.y / 4 + (i7 * 10) - 10, 1, BLACK);
           }    
           pastbox = curbox;
           curbox = 2;
@@ -462,9 +610,9 @@ void loop() {
           if (letter <=18){
             tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + (letter * 17), p.y / 4 + (i7 * 10) - 70, 1, BLACK);
           } else if (letter <=36){
-            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 30, 1, BLACK);
+            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 40, 1, BLACK);
           } else if (letter <=54){
-            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10), 1, BLACK);
+            tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-36) * 17), p.y / 4 + (i7 * 10) - 10, 1, BLACK);
           }     
           pastbox = curbox;
           curbox = 3;
