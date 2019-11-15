@@ -3,6 +3,7 @@
 #include <TouchScreen.h>
 #include <SoftwareSerial.h>//serial communication to the EsP8266
 #include <Fonts/FreeSansBold24pt7b.h>//font
+#include <Fonts/FreeSans24pt7b.h>//font
 #include <Fonts/FreeSans18pt7b.h>//font
 #include <Fonts/FreeSans9pt7b.h>//font
 #include <Fonts/FreeMono12pt7b.h>//font
@@ -248,7 +249,7 @@ void drawcalculator(){
   statusbar();
 }
 void weatherlayout(){
-  tft.fillScreen(0x07E0);
+  //tft.fillScreen(0x07E0);
   /*
   tft.fillRect(0,0  ,320,10, 0x0000);
   tft.fillRect(0,50 ,320,10, 0x0022);
@@ -279,12 +280,14 @@ void weatherlayout(){
   int16_t colormask[] = { 0x001F, 0x07E0, 0xF800, 0xFFFF };
   uint16_t dx=2, rgb, n, wid, ht;
   for (n = 0; n < 256; n++) {
-                rgb = n;
-                rgb = tft.color565(rgb, 90-rgb/5, 255);
-                tft.fillRect(0, n * dx+10, 320, dx, rgb);
+                rgb = n*1;
+                rgb = tft.color565(0, 255, rgb);
+                tft.fillRect(0, n * dx, 320, dx, rgb);
   }
+  rgb = tft.color565(255, 0, 255);
+  //tft.fillRect(0,255,320,225,rgb);
   /*
-  
+
   for (byte x = 0; x < 200; x++) { // generate a simple grayscale gradient
    uint16_t color = (uint16_t)(255 * x) / 200;
    pixels[x] = tft.color565(000, 000, color);
@@ -303,18 +306,18 @@ void weatherlayout(){
      tft.pushColors(pixels, 0, 200); // draw the generated colors
   }
   */
-  tft.setTextColor(FONT);
-  tft.setTextSize(3);
-  tft.setFont(&FreeMono24pt7b);
-  tft.setCursor(80, 150); tft.print(weatherdigit);
+  tft.setTextColor(WHITE);
+  tft.setTextSize(4);
+  tft.setFont(&FreeSans24pt7b);
+  tft.setCursor(20, 250); tft.print(weatherdigit);
   tft.setFont(&FreeSans18pt7b);
   tft.setTextSize(1);
-  tft.setCursor(95, 260);  tft.print("Humidity");  
-  tft.setCursor(130, 300);  tft.print(humidity);  tft.print("%");
-  tft.setCursor(65, 340);  tft.print("Percipitation");
-  tft.setCursor(130, 380);  tft.print(percipitation);  tft.print("%");
-  tft.setCursor(65, 420);  tft.print("Wind Speed");
-  tft.setCursor(110, 460);  tft.print(wind);  tft.setCursor(140, 460);  tft.print("mph");
+  tft.setTextColor(WHITE);
+  tft.setCursor(20, 300);  tft.print("Humidity");
+  tft.setCursor(20, 380);  tft.print("Wind Speed");
+  tft.setTextColor(WHITE);
+  tft.setCursor(20, 340);  tft.print(humidity);  tft.print("%");
+  tft.setCursor(20, 420);  tft.print(wind); tft.print("mph");
 
 }
 void memolayout() {
