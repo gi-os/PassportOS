@@ -249,33 +249,6 @@ void drawcalculator(){
   statusbar();
 }
 void weatherlayout(){
-  //tft.fillScreen(0x07E0);
-  /*
-  tft.fillRect(0,0  ,320,10, 0x0000);
-  tft.fillRect(0,50 ,320,10, 0x0022);
-  tft.fillRect(0,60 ,320,10, 0x0042);
-  tft.fillRect(0,70 ,320,10, 0x0062);
-  tft.fillRect(0,80 ,320,10, 0x0082);
-  tft.fillRect(0,90,320,10, 0x00A9);
-  tft.fillRect(0,100,320,10, 0x00C9);
-  tft.fillRect(0,110,320,10, 0x00EA);
-  tft.fillRect(0,120,320,10, 0x0043);
-  tft.fillRect(0,180,320,10, 0x0043);
-  tft.fillRect(0,200,320,10, 0x0043);
-  tft.fillRect(0,220,320,10, 0x0043);
-  tft.fillRect(0,240,320,10, 0x0043);
-  tft.fillRect(0,260,320,10, 0x0043);
-  tft.fillRect(0,280,320,10, 0x0043);
-  tft.fillRect(0,300,320,10, 0x0043);
-  tft.fillRect(0,320,320,10, 0x0043);
-  tft.fillRect(0,340,320,10, 0x0043);
-  tft.fillRect(0,360,320,10, 0x0043);
-  tft.fillRect(0,380,320,10, 0x0043);
-  tft.fillRect(0,400,320,10, 0x0043);
-  tft.fillRect(0,420,320,10, 0x0043);
-  tft.fillRect(0,440,320,10, 0x0043);
-  tft.fillRect(0,460,320,10, 0x0043);
-  */
   uint8_t aspect=0;
   int16_t colormask[] = { 0x001F, 0x07E0, 0xF800, 0xFFFF };
   uint16_t dx=2, rgb, n, wid, ht;
@@ -284,41 +257,20 @@ void weatherlayout(){
                 rgb = tft.color565(0, 255, rgb);
                 tft.fillRect(0, n * dx, 320, dx, rgb);
   }
-  rgb = tft.color565(255, 0, 255);
-  //tft.fillRect(0,255,320,225,rgb);
-  /*
-
-  for (byte x = 0; x < 200; x++) { // generate a simple grayscale gradient
-   uint16_t color = (uint16_t)(255 * x) / 200;
-   pixels[x] = tft.color565(000, 000, color);
-  }
-  int z;
-  for (z <48){
-    z++;
-    Serial.println(z);
-    Serial.println(pixels[z*4]);
-    tft.fillRect(0,z*10,320,10,pixels[z*4]);
-    delay(10);
-  }
-  */
-  /*
-  for (byte y = 0; y < 3; y++) { // 3 lines
-     tft.pushColors(pixels, 0, 200); // draw the generated colors
-  }
-  */
-  tft.fillRect(30,30,320,10,WHITE);
+  tft.fillRect(30,50,10,390,WHITE);
   tft.setTextColor(WHITE);
   tft.setTextSize(4);
   tft.setFont(&FreeSans24pt7b);
-  tft.setCursor(20, 200); tft.print(weatherdigit);
+  tft.setCursor(40, 200); tft.print(weatherdigit);
+  tft.fillRect(45,260,5,180,WHITE);
   tft.setFont(&FreeSans18pt7b);
   tft.setTextSize(1);
   tft.setTextColor(WHITE);
-  tft.setCursor(20, 300);  tft.print("Humidity");
-  tft.setCursor(20, 380);  tft.print("Wind Speed");
+  tft.setCursor(55, 300);  tft.print("Humidity");
+  tft.setCursor(55, 380);  tft.print("Wind Speed");
   tft.setTextColor(WHITE);
-  tft.setCursor(20, 340);  tft.print(humidity);  tft.print("%");
-  tft.setCursor(20, 420);  tft.print(wind); tft.print("mph");
+  tft.setCursor(70, 340);  tft.print(humidity);  tft.print("%");
+  tft.setCursor(70, 420);  tft.print(wind); tft.print("mph");
 
 }
 void memolayout() {
