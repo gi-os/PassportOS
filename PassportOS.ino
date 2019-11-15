@@ -39,7 +39,7 @@ SoftwareSerial esp8266(RX, TX);
 #define GREY3   0x7BCF
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
-float versnum = 0.56;
+float versnum = 0.57;
 int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2 = 12, date3 = 1, date4 = 2019, weatherdigit = 69, viewdate, initclock = 1; //ints delivered by ESP8266
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
@@ -223,7 +223,7 @@ void drawcalculator(){
   tft.setTextColor(GREY1);
   tft.setTextSize(1);
   tft.setFont(&FreeMono12pt7b);
-  tft.setCursor(0, 30); 
+  tft.setCursor(0, 40); 
   if (calcvalue1 != 0){
     tft.print(calcvalue1);    
   }
@@ -306,13 +306,39 @@ void rebootscreen(){
   tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
   homelayout();
 }
+void errorscreen(int errornumber){
+  tft.reset();
+  uint16_t identifier = tft.readID();
+  tft.begin(identifier);
+  tft.setRotation(0);
+  tft.invertDisplay(1);
+  tft.fillScreen(RED);
+  tft.setTextSize(4);
+  tft.setCursor(0, 0); //set cursor
+  tft.println("ERROR");
+  tft.setTextSize(1);
+  tft.setCursor(0, 30); //set cursor
+  if (errornumber ==11) {
+    tft.println("ESP8266 was unable to be reached.");
+  } else if (errornumber ==12) {
+    tft.println("ESP8266 was unable to connect to the internet.");
+  }
+  tft.setTextSize(2);
+  tft.println("\n\nREBOOTING IN 5 SECONDS.");
+  delay(5000);
+  setup();
+}
 void setup() {
   Serial.begin(115200);
   esp8266.begin(9600);
   Serial.println(data);
   if (data == 200) {
     countup = 1;
-  } else if (data != 200) {
+  }  else if (data == 2069) {
+    errorscreen(12);
+  }  else if (data == 0) {
+    errorscreen(11);
+  }  else if (data != 200) {
     if (countup == 1) {
       weatherdigit = data;
       countup++;
