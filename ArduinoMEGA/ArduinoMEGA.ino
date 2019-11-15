@@ -44,7 +44,7 @@ SoftwareSerial esp8266(RX, TX);
 float versnum = 0.57;
 int countup, data, time1 = 12, time2 = 35, time21, time22, date1, date2 = 12, date3 = 1, date4 = 2019, weatherdigit = 69, humidity=66, percipitation=31, wind=2, weathertype=1; //ints delivered by ESP8266
 int time3=0, ticksec=0, viewdate, initclock = 1; //data not gathered from esp
-int scrollcur = 0, slidepage;
+int scrollcur = 0, slidepage, selectweathericon;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
 int homepasty2, homepasty, px, pxpre = 0, memopastx, memopasty;
@@ -252,26 +252,49 @@ void weatherlayout(){
   uint8_t aspect=0;
   int16_t colormask[] = { 0x001F, 0x07E0, 0xF800, 0xFFFF };
   uint16_t dx=2, rgb, n, wid, ht;
-  for (n = 0; n < 256; n++) {
-                rgb = n*1;
-                rgb = tft.color565(0, 255, rgb);
-                tft.fillRect(0, n * dx, 320, dx, rgb);
+  selectweathericon=2;
+  if (selectweathericon == 2 || selectweathericon == 3 || selectweathericon == 5 || selectweathericon == 6){//if its cloudy weather do dull bg
+    for (n = 0; n < 276; n++) {
+                  rgb = n;
+                  rgb = tft.color565(0, 20-rgb, 290-rgb);
+                  tft.fillRect(0, n * dx-70, 320, dx, rgb);
+    }
+  } else{//if it isnt do the colorful bg
+    for (n = 0; n < 316; n++) {
+                  rgb = n;
+                  rgb = tft.color565(0, rgb-40, 310-rgb);
+                  tft.fillRect(0, n * dx-100, 320, dx, rgb);
+    }
   }
-  tft.fillRect(30,50,10,390,WHITE);
   tft.setTextColor(WHITE);
-  tft.setTextSize(4);
+  tft.setTextSize(2);
   tft.setFont(&FreeSans24pt7b);
-  tft.setCursor(40, 200); tft.print(weatherdigit);
-  tft.fillRect(45,260,5,180,WHITE);
+  tft.setCursor(110, 260); tft.print(weatherdigit);
   tft.setFont(&FreeSans18pt7b);
   tft.setTextSize(1);
   tft.setTextColor(WHITE);
-  tft.setCursor(55, 300);  tft.print("Humidity");
-  tft.setCursor(55, 380);  tft.print("Wind Speed");
+  tft.setCursor(92, 300);  tft.print("Humidity");
+  tft.setCursor(66, 380);  tft.print("Wind Speed");
   tft.setTextColor(WHITE);
-  tft.setCursor(70, 340);  tft.print(humidity);  tft.print("%");
-  tft.setCursor(70, 420);  tft.print(wind); tft.print("mph");
-
+  tft.setCursor(125, 340);  tft.print(humidity);  tft.setCursor(165, 340);  tft.print("%");
+  tft.setCursor(110, 420);  tft.print(wind); tft.setCursor(145, 420); tft.print("mph");
+  selectweathericon=2;
+  if (selectweathericon==1){
+    tft.drawBitmap(85, 30, sun, 150, 150, YELLOW); //weather icon
+  } else if (selectweathericon==2){
+    tft.drawBitmap(85, 30, cloud, 150, 150, WHITE); //weather icon
+    tft.drawBitmap(85, 30, rain, 150, 150, BLUE); //weather icon
+    tft.drawBitmap(85, 30, thunder, 150, 150, YELLOW); //weather icon
+  } else if (selectweathericon==3 || selectweathericon ==5){
+    tft.drawBitmap(85, 30, cloud, 150, 150, WHITE); //weather icon
+    tft.drawBitmap(85, 30, rain, 150, 150, BLUE); //weather icon
+  } else if (selectweathericon==6){
+    tft.drawBitmap(85, 30, cloud, 150, 150, WHITE); //weather icon
+    tft.drawBitmap(85, 30, snow, 150, 150, FONT); //weather icon
+  } else if (selectweathericon==7 || selectweathericon==0 || selectweathericon==8){
+    tft.drawBitmap(85, 30, sun, 150, 150, YELLOW); //weather icon
+    tft.drawBitmap(85, 30, cloudy, 150, 150, WHITE); //weather icon
+  }
 }
 void memolayout() {
   tft.fillRect(0,0,320,50,BLACK);
@@ -334,6 +357,33 @@ void rebootscreen(){
   tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
   homelayout();
 }
+void devcenter(){
+  tft.drawLine(280,0,280,480,BLACK);
+  tft.drawLine(270,0,270,480,GREEN);
+  tft.drawLine(260,0,260,480,GREEN);
+  tft.drawLine(250,0,250,480,BLACK);
+  tft.drawLine(240,0,240,480,GREEN);
+  tft.drawLine(230,0,230,480,GREEN);
+  tft.drawLine(220,0,220,480,BLACK);
+  tft.drawLine(210,0,210,480,GREEN);
+  tft.drawLine(200,0,200,480,GREEN);
+  tft.drawLine(190,0,190,480,BLACK);
+  tft.drawLine(180,0,180,480,GREEN);
+  tft.drawLine(170,0,170,480,GREEN);
+  tft.drawLine(160,0,160,480,RED);
+  tft.drawLine(150,0,150,480,GREEN);
+  tft.drawLine(140,0,140,480,GREEN);
+  tft.drawLine(130,0,130,480,BLACK);
+  tft.drawLine(120,0,120,480,GREEN);
+  tft.drawLine(110,0,110,480,GREEN);
+  tft.drawLine(100,0,100,480,BLACK);
+  tft.drawLine(90,0,90,480,GREEN);
+  tft.drawLine(80,0,80,480,GREEN);
+  tft.drawLine(70,0,70,480,BLACK);
+  tft.drawLine(60,0,60,480,GREEN);
+  tft.drawLine(50,0,50,480,GREEN);
+  tft.drawLine(40,0,40,480,BLACK);
+}
 void errorscreen(int errornumber){
   tft.reset();
   uint16_t identifier = tft.readID();
@@ -380,41 +430,36 @@ void setup() {
       Serial.print("The humidity is");
       Serial.println(humidity);
     } else if (countup == 3) {
-      percipitation = data;
-      countup++;
-      Serial.print("The percipitation is");
-      Serial.println(percipitation);
-    } else if (countup == 4) {
       wind = data;
       countup++;
       Serial.print("The wind is");
       Serial.println(wind);
-    } else if (countup == 5) {
+    } else if (countup == 4) {
       weathertype = data;
       countup++;
       Serial.print("The weather type is");
-      Serial.println(weatherdigit);
-    } else if (countup == 6) {
+      Serial.println(weathertype);
+    } else if (countup == 5) {
       date1 = data;
       countup++;
       Serial.print("The weekday is ");
       Serial.println(date1);
-    } else if (countup == 7) {
+    } else if (countup == 6) {
       date2 = data;
       countup++;
       Serial.print("The month is ");
       Serial.println(date2);
-    } else if (countup == 8) {
+    } else if (countup == 7) {
       date3 = data;
       countup++;
       Serial.print("The day is ");
       Serial.println(date3);
-    } else if (countup == 9) {
+    } else if (countup == 8) {
       date4 = data;
       countup++;
       Serial.print("The year is ");
       Serial.println(date4);
-    } else if (countup == 10) {
+    } else if (countup == 9) {
       time1 = data;
       countup++;
       Serial.print("The hour is ");
@@ -427,6 +472,21 @@ void setup() {
       time22 = time2 / 10; //X0 hand
       time21 = time2 % 10; //0X hand
     }
+  }
+  if (weathertype > 199 && weathertype < 299){
+    selectweathericon=2;//thunderstorm
+  }else if (weathertype > 299 && weathertype < 399){
+    selectweathericon=3;//drizzle
+  }else if (weathertype > 499 && weathertype < 599){
+    selectweathericon=5;//rain
+  }else if (weathertype > 599 && weathertype < 699){
+    selectweathericon=6;//snow
+  }else if (weathertype > 699 && weathertype < 799){
+    selectweathericon=7;//atmosphere
+  }else if (weathertype == 800){
+    selectweathericon=1;//clear
+  }else if (weathertype > 800 && weathertype < 899){
+    selectweathericon=8;//clouds
   }
   Serial.println("PassportOS Started");
   Serial.print("Version: ");  Serial.println(versnum);

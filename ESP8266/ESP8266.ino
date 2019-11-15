@@ -1,5 +1,5 @@
  /*
-  * Author: Emmanuel Odunlade 
+  * Author: Emmanuel Odunlade
   * Complete Project Details http://randomnerdtutorials.com
   */
 //https://netcontrol.irt.drexel.edu/upload/custom/guestplus-cp-profile/guestp.html?cmd=login&mac=f0:6e:0b:e3:b1:8a&ip=10.253.15.184&essid=drexelguest&apname=race-a-72fd&apgroup=racest&url=http%3A%2F%2Fwww.msftconnecttest.com%2Fredirect
@@ -11,8 +11,8 @@
 #include<SoftwareSerial.h> //Included SoftwareSerial Library
 SoftwareSerial s(1,3);
 // Replace with your SSID and password details
-char ssid[] = "Clement";        
-char pass[] = "bucket1234";   
+char ssid[] = "Clement";
+char pass[] = "bucket1234";
 
 WiFiClient client;
 
@@ -20,12 +20,12 @@ WiFiClient client;
 const char server[] = "api.openweathermap.org";
 
 // Replace the next line to match your city and 2 letter country code
-String nameOfCity = "PHILADELPHIA,US"; 
+String nameOfCity = "PHILADELPHIA,US";
 // How your nameOfCity variable would look like for Lagos on Nigeria
-//String nameOfCity = "Lagos,NG"; 
+//String nameOfCity = "Lagos,NG";
 
 // Replace the next line with your API Key
-String apiKey = "a28f9065c5f155f4746f2d2525e0451b"; 
+String apiKey = "a28f9065c5f155f4746f2d2525e0451b";
 
 String text;
 
@@ -49,7 +49,7 @@ void setup() {
   pinMode(snowLed, OUTPUT);
   pinMode(hailLed, OUTPUT);
   s.begin(9600);
-  
+
   text.reserve(JSON_BUFF_DIMENSION);
 
   WiFi.begin(ssid,pass);
@@ -63,10 +63,13 @@ void setup() {
   gettime();
 }
 float tempNow=0;
+float humidityNow=0;
+float windNow=0;
+float tempid=0;
 int dayofweek=0;
 int timhour=0;
 int timmin=0;
-void loop() { 
+void loop() {
   //OWM requires 10mins between request intervals
   //check if 10mins has passed then conect again and pull
   if (millis() - lastConnectionTime > postInterval) {
@@ -76,7 +79,7 @@ void loop() {
   }
   /*
   int incomingByte = 1;
-  //Serial.begin(9600); 
+  //Serial.begin(9600);
   if (Serial.available() > 0) {
     // read the incoming byte:
     incomingByte = Serial.read();
@@ -93,9 +96,15 @@ void loop() {
   }
   */
   int tempNowint = (int)tempNow;
-  s.write(200);//reset system
+  s.write(4000);//reset system
   s.write(tempNowint);//temp
+  s.write(humidityNow);//humid
+  s.write(windNow);//wind
+  s.write(tempid);//temp id
   s.write(dayofweek);//weekday
+  s.write(month);//weekday
+  s.write(day);//weekday
+  s.write(year);//weekday
   s.write(timhour);//hour
   s.write(timmin);//min
   delay(1000);
@@ -158,7 +167,7 @@ void makehttpRequest() {
     client.println("User-Agent: ArduinoWiFi/1.1");
     client.println("Connection: close");
     client.println();
-    
+
     unsigned long timeout = millis();
     while (client.available() == 0) {
       if (millis() - timeout > 5000) {
@@ -167,14 +176,14 @@ void makehttpRequest() {
         return;
       }
     }
-    
+
     char c = 0;
     //Serial.println(client.available());
     while (client.available()) {
       delay(1);
       c = client.read();
       //Serial.println(c);
-      
+
       // since json contains equal number of open and close curly brackets, this means we can determine when a json is completely received  by counting
       // the open and close occurences,
       //Serial.print(c);
@@ -188,9 +197,9 @@ void makehttpRequest() {
       if (startJson == true) {
         text += c;
       }
-      // if jsonend = 0 then we have have received equal number of curly braces 
+      // if jsonend = 0 then we have have received equal number of curly braces
       if (jsonend == 0 && startJson == true) {
-        
+
         parseJson(text.c_str());  // parse c string text in parseJson function
         text = "";                // clear text string for the next time
         startJson = false;        // set startJson to false to indicate that a new message has not yet started
@@ -223,12 +232,14 @@ void parseJson(const char * jsonString) {
   JsonObject& later = list[1];
 
   // including temperature and humidity for those who may wish to hack it in
-  
+
   String city = root["city"]["name"];
-  
+
   tempNow = nowT["main"]["temp"];
   //Serial.println(tempNow);
-  float humidityNow = nowT["main"]["humidity"];
+  humidityNow = nowT["main"]["humidity"];
+  windNow = nowT["wind"]["speed"];
+  tempid = nowT["weather"][0]["id"];
   String weatherNow = nowT["weather"][0]["description"];
 
   float tempLater = later["main"]["temp"];
@@ -250,7 +261,7 @@ void diffDataAction(String nowT, String later, String weatherType) {
   int indexNow = nowT.indexOf(weatherType);
   int indexLater = later.indexOf(weatherType);
   // if weather type = rain, if the current weather does not contain the weather type and the later message does, send notification
-  if (weatherType == "rain") { 
+  if (weatherType == "rain") {
     if (indexNow == -1 && indexLater != -1) {
       digitalWrite(rainLed,HIGH);
       digitalWrite(clearLed,LOW);
@@ -268,10 +279,10 @@ void diffDataAction(String nowT, String later, String weatherType) {
       digitalWrite(hailLed,LOW);
       //Serial.println("Oh no! It is going to " + weatherType + " later! Predicted " + later);
     }
-    
+
   }
   // can't remember last time I saw hail anywhere but just in case
-  else if (weatherType == "hail") { 
+  else if (weatherType == "hail") {
    if (indexNow == -1 && indexLater != -1) {
       digitalWrite(hailLed,HIGH);
       digitalWrite(clearLed,LOW);
