@@ -306,10 +306,11 @@ void weatherlayout(){
      tft.pushColors(pixels, 0, 200); // draw the generated colors
   }
   */
+  tft.fillRect(30,30,320,10,WHITE);
   tft.setTextColor(WHITE);
   tft.setTextSize(4);
   tft.setFont(&FreeSans24pt7b);
-  tft.setCursor(20, 250); tft.print(weatherdigit);
+  tft.setCursor(20, 200); tft.print(weatherdigit);
   tft.setFont(&FreeSans18pt7b);
   tft.setTextSize(1);
   tft.setTextColor(WHITE);
