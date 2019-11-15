@@ -40,7 +40,8 @@ SoftwareSerial esp8266(RX, TX);
 #define MINPRESSURE 10
 #define MAXPRESSURE 10000
 float versnum = 0.57;
-int countup, data, time1 = 12, time2 = 35, time21, time22, time3, ticksec, date1, date2 = 12, date3 = 1, date4 = 2019, weatherdigit = 69, viewdate, initclock = 1; //ints delivered by ESP8266
+int countup, data, time1 = 12, time2 = 35, time21, time22, date1, date2 = 12, date3 = 1, date4 = 2019, weatherdigit = 69; //ints delivered by ESP8266
+int time3=0, ticksec=0, viewdate, initclock = 1; //data not gathered from esp
 int scrollcur = 0, slidepage;
 int ticksecpastsmall, ticksecpastlarge, ticksecpast;
 int page = 0;
@@ -223,9 +224,9 @@ void drawcalculator(){
   tft.setTextColor(GREY1);
   tft.setTextSize(1);
   tft.setFont(&FreeMono12pt7b);
-  tft.setCursor(0, 40); 
+  tft.setCursor(0, 40);
   if (calcvalue1 != 0){
-    tft.print(calcvalue1);    
+    tft.print(calcvalue1);
   }
   if (calcaction == 1){
     tft.print("/");
@@ -322,9 +323,11 @@ void errorscreen(int errornumber){
     tft.println("ESP8266 was unable to be reached.");
   } else if (errornumber ==12) {
     tft.println("ESP8266 was unable to connect to the internet.");
-  }
+  }  else {
+      tft.println("Unknown error.");
+    }
   tft.setTextSize(2);
-  tft.println("\n\nREBOOTING IN 5 SECONDS.");
+  tft.println("\nREBOOTING IN 5 SECONDS.");
   delay(5000);
   setup();
 }
@@ -332,11 +335,11 @@ void setup() {
   Serial.begin(115200);
   esp8266.begin(9600);
   Serial.println(data);
-  if (data == 200) {
+  if (data == 4000) {
     countup = 1;
-  }  else if (data == 2069) {
+  }  else if (data == 4069) {
     errorscreen(12);
-  }  else if (data == 0) {
+  }  else if (data == 4070) {//when ESP8266 is installed make 0!
     errorscreen(11);
   }  else if (data != 200) {
     if (countup == 1) {
@@ -345,16 +348,31 @@ void setup() {
       Serial.print("The weather is");
       Serial.println(weatherdigit);
     } else if (countup == 2) {
-      time1 = data;
+      date1 = data;
       countup++;
       Serial.print("The weekday is ");
       Serial.println(date1);
     } else if (countup == 3) {
+      date2 = data;
+      countup++;
+      Serial.print("The month is ");
+      Serial.println(date1);
+    } else if (countup == 4) {
+      date3 = data;
+      countup++;
+      Serial.print("The day is ");
+      Serial.println(date1);
+    } else if (countup == 5) {
+      date4 = data;
+      countup++;
+      Serial.print("The year is ");
+      Serial.println(date1);
+    } else if (countup == 6) {
       time1 = data;
       countup++;
       Serial.print("The hour is ");
       Serial.println(time1);
-    } else if (countup == 4) {
+    } else if (countup == 7) {
       time2 = data;
       countup = 0;
       Serial.print("The min is ");
@@ -372,6 +390,7 @@ void setup() {
   tft.setRotation(0);
   tft.invertDisplay(1);
   tft.fillScreen(NAVY1);
+  tft.fillRect(240, 0, 80, 480, NAVY3); //draw sidebar as scroll
   homelayout();
 }
 void loop() {
@@ -519,7 +538,7 @@ void loop() {
           } else if (p.x >242 && p.x <316){
             calcaction=4;
           }
-        } 
+        }
         if (calcaction != 0){//check if an action has been requested
           if (calcvalue2 == 0 && calcvalue1 ==0){//check if 1st box has been written in
             calcvalue1 = calcvaluecur;
@@ -528,7 +547,7 @@ void loop() {
             calcvalue1 = calcvaluecur;
             calcvalue2 = 0;
             calcvaluecur = 0;
-          } 
+          }
           if (activatecalc== 1){//if equals was clicked
             calcvalue2 = calcvaluecur;
             calcvaluecur = 0;
@@ -540,7 +559,7 @@ void loop() {
               calcvaluecur = calcvalue1-calcvalue2;
             } else if (calcaction ==4){//addition
               calcvaluecur = calcvalue1+calcvalue2;
-            } 
+            }
             if (calcvaluecur > 1000000000){//stop overflow errors
               calcvaluecur=0;
             }
@@ -568,7 +587,7 @@ void loop() {
             addzero=0;
           }
         }
-        
+
         drawcalculator();
       }
     } else if (page == 3) { //weather
@@ -628,7 +647,7 @@ void loop() {
             tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 40, 1, BLACK);
           } else if (letter <=54){
             tft.fillCircle((p.x - 115) / 4 + (i6 * 17) + ((letter-36) * 17), p.y / 4 + (i7 * 10) - 10, 1, BLACK);
-          }    
+          }
           pastbox = curbox;
           curbox = 2;
         } else if (p.x < 320 && p.x > 215) { //check which box it is in
@@ -639,7 +658,7 @@ void loop() {
             tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-18) * 17), p.y / 4 + (i7 * 10) - 40, 1, BLACK);
           } else if (letter <=54){
             tft.fillCircle((p.x - 215) / 4 + (i6 * 17) + ((letter-36) * 17), p.y / 4 + (i7 * 10) - 10, 1, BLACK);
-          }     
+          }
           pastbox = curbox;
           curbox = 3;
         }
